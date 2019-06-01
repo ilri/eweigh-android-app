@@ -3,4 +3,7 @@
 
     <string name="no_connection">No Connection</string>
     <string name="no_info_found">No Info Found</string>
+    <string name="live_weight">LiveWeight</string>
+    <string name="enter_live_weight_cm">Enter live weight (cm)</string>
+    <string name="live_weight_label">LiveWeight:</string>
 </resources>
