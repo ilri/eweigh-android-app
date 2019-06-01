@@ -25,14 +25,15 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
+                double liveWeight = 0;
 
                 if(count > 0){
                     double heartGirth = Double.valueOf(s.toString());
-                    double liveWeight = LiveWeight.calculateLW(heartGirth);
-
-                    txtLW.setText(
-                            String.format("%s%s", getString(R.string.live_weight_label), liveWeight));
+                    liveWeight = LiveWeight.calculateLW(heartGirth);
                 }
+
+                txtLW.setText(
+                        String.format("%s%s", getString(R.string.live_weight_label), liveWeight));
             }
 
             @Override
