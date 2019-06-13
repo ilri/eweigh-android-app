@@ -1,6 +1,7 @@
 package org.ilri.eweigh.hg_lw;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -25,6 +26,9 @@ import org.ilri.eweigh.R;
 import org.ilri.eweigh.network.APIService;
 import org.ilri.eweigh.network.RequestParams;
 import org.ilri.eweigh.utils.URL;
+import org.ilri.eweigh.utils.Utils;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import locationprovider.davidserrano.com.LocationProvider;
 
@@ -71,6 +75,10 @@ public class ConvertActivity extends AppCompatActivity {
     private void getLiveWeight(){
         APIService apiService = new APIService(this);
 
+        final ProgressDialog dialog =
+                Utils.getProgressDialog(this, "Processing...", false);
+        dialog.show();
+
         RequestParams params = new RequestParams();
         params.put("hg", inputHG.getText().toString());
         params.put("lat", String.valueOf(latitude));
@@ -80,16 +88,32 @@ public class ConvertActivity extends AppCompatActivity {
             @Override
             public void onResponse(String response) {
                 Log.d(TAG, response);
+                dialog.dismiss();
 
-                Toast.makeText(ConvertActivity.this, response, Toast.LENGTH_LONG).show();
+                try {
+                    JSONObject obj = new JSONObject(response);
 
-                txtLW.setText(String.format("%s%s", getString(R.string.live_weight_label), response));
+                    boolean error = obj.optBoolean("error", false);
+                    String message = obj.optString("message", "_");
+
+                    if(error){
+                        Toast.makeText(ConvertActivity.this, message, Toast.LENGTH_SHORT).show();
+                    }
+                    else{
+                        double LW = obj.optDouble("lw", 0);
+                        txtLW.setText(String.valueOf(LW));
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Toast.makeText(ConvertActivity.this, "An error occurred",
                         Toast.LENGTH_SHORT).show();
+                dialog.dismiss();
             }
         });
     }
