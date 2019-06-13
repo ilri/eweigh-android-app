@@ -1,43 +1,51 @@
 package org.ilri.eweigh;
 
-import android.support.v7.app.AppCompatActivity;
+import android.content.Intent;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.widget.EditText;
+import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
-import org.ilri.eweigh.hg_lw.LiveWeight;
+import com.marcinorlowski.fonty.Fonty;
 
-public class MainActivity extends AppCompatActivity {
+import org.ilri.eweigh.hg_lw.ConvertActivity;
+
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        EditText inputHG = findViewById(R.id.input_hg);
-        final TextView txtLW = findViewById(R.id.txt_lw);
+        if(getSupportActionBar() != null){
+            getSupportActionBar().hide();
+        }
 
-        inputHG.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+        Button btnLW = findViewById(R.id.btn_get_lw);
+        btnLW.setOnClickListener(this);
 
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                double liveWeight = 0;
+        Button btnAbout = findViewById(R.id.btn_about);
+        btnAbout.setOnClickListener(this);
 
-                if(count > 0){
-                    double heartGirth = Double.valueOf(s.toString());
-                    liveWeight = LiveWeight.calculateLW(heartGirth);
-                }
+        TextView txtAppNameVersion = findViewById(R.id.txt_app_name_version);
+        txtAppNameVersion.setText(String.format("v%s", BuildConfig.VERSION_NAME));
 
-                txtLW.setText(
-                        String.format("%s%s", getString(R.string.live_weight_label), liveWeight));
-            }
+        Fonty.setFonts(this);
+    }
 
-            @Override
-            public void afterTextChanged(Editable s) {}
-        });
+    @Override
+    public void onClick(View v) {
+
+        switch(v.getId()){
+
+            case R.id.btn_get_lw:
+                startActivity(new Intent(this, ConvertActivity.class));
+                break;
+
+            case R.id.btn_about:
+                startActivity(new Intent(this, AboutActivity.class));
+                break;
+        }
     }
 }

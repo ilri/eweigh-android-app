@@ -37,8 +37,7 @@ public class APIService {
             MySingleton.getInstance(context).addToRequestQueue(req);
         }
         else{
-            Toast.makeText(context, context.getString(R.string.no_connection),
-                    Toast.LENGTH_LONG).show();
+            Toast.makeText(context, context.getString(R.string.no_connection), Toast.LENGTH_LONG).show();
         }
     }
 

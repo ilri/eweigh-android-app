@@ -11,4 +11,6 @@
     <string name="prompt_password">Password</string>
     <string name="action_sign_in">Sign in</string>
     <string name="action_sign_in_short">Sign in</string>
+    <string name="get_live_weight">Get Live Weight</string>
+    <string name="about">About</string>
 </resources>
