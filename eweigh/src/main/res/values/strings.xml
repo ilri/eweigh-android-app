@@ -6,4 +6,9 @@
     <string name="live_weight">LiveWeight</string>
     <string name="enter_live_weight_cm">Enter live weight (cm)</string>
     <string name="live_weight_label">LiveWeight:</string>
+
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in">Sign in</string>
+    <string name="action_sign_in_short">Sign in</string>
 </resources>

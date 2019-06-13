@@ -7,7 +7,7 @@ import android.text.TextWatcher;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import org.ilri.eweigh.liveweight.LiveWeight;
+import org.ilri.eweigh.hg_lw.LiveWeight;
 
 public class MainActivity extends AppCompatActivity {
 

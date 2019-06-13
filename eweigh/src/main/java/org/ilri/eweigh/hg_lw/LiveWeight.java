@@ -1,4 +1,4 @@
-package org.ilri.eweigh.liveweight;
+package org.ilri.eweigh.hg_lw;
 
 import java.text.DecimalFormat;
 

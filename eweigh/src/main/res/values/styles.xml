@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
@@ -17,6 +17,13 @@
         <item name="android:layout_marginTop">10dp</item>
         <item name="android:layout_marginBottom">10dp</item>
         <item name="android:padding">15dp</item>
+    </style>
+
+    <style name="CardTheme">
+        <item name="android:padding">4dp</item>
+        <item name="android:layout_margin">5dp</item>
+        <item name="android:radius">1dp</item>
+        <item name="android:elevation" tools:targetApi="lollipop">1dp</item>
     </style>
 
 </resources>
