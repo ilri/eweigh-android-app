@@ -8,17 +8,11 @@ import android.util.Log;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 
-import org.ilri.eweigh.R;
 import org.ilri.eweigh.network.APIService;
 import org.ilri.eweigh.network.RequestParams;
 import org.ilri.eweigh.utils.URL;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
 
 public class AccountUtils {
     private static final String TAG = AccountUtils.class.getSimpleName();
@@ -27,7 +21,6 @@ public class AccountUtils {
     private SharedPreferences.Editor editor;
 
     private APIService apiService;
-    private URL urlStr;
 
     public AccountUtils(Context context){
         pref = context.getSharedPreferences("ew_pref",
@@ -35,7 +28,6 @@ public class AccountUtils {
         editor = pref.edit();
 
         apiService = new APIService(context);
-        urlStr = new URL();
     }
 
 
@@ -77,11 +69,6 @@ public class AccountUtils {
         return user;
     }
 
-    public boolean isDirector(){
-        User user = getUserDetails();
-        return user.getGroupName().equals("Other Directors");
-    }
-
     public boolean isLoggedIn(){
         User user = getUserDetails();
         return user.getUserId() != 0 && !TextUtils.isEmpty(user.getFullName()) &&
@@ -106,7 +93,7 @@ public class AccountUtils {
         RequestParams params = new RequestParams();
         params.put(User.FCM_TOKEN, token);
 
-        apiService.post(urlStr.UpdateMemberInfo, params, new Response.Listener<String>() {
+        apiService.post(URL.UpdateAccount, params, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 Log.d(TAG, response);

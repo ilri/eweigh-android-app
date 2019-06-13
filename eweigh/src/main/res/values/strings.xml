@@ -3,7 +3,7 @@
 
     <string name="no_connection">No Connection</string>
     <string name="no_info_found">No Info Found</string>
-    <string name="live_weight">LiveWeight</string>
+    <string name="live_weight">Live Weight</string>
     <string name="enter_live_weight_cm">Enter live weight (cm)</string>
     <string name="live_weight_label">LiveWeight:</string>
 
@@ -13,4 +13,10 @@
     <string name="action_sign_in_short">Sign in</string>
     <string name="get_live_weight">Get Live Weight</string>
     <string name="about">About</string>
+
+    <string name="location_permission">The app requires access to your current location
+        to submit data. Please allow this permission to continue</string>
+    <string name="zero">0</string>
+    <string name="submit">Submit</string>
+    <string name="heart_girth_cm">Heart Girth (cm)</string>
 </resources>
