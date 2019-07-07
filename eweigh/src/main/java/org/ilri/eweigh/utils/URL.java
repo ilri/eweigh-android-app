@@ -5,8 +5,8 @@ import org.ilri.eweigh.BuildConfig;
 public class URL {
 
     private static String BASE_URL = BuildConfig.DEBUG ?
-            "http://192.168.1.103/Code/ilri/eweigh-api/" :
-            "https://ilri-test.co.ke/";
+            "http://192.168.1.102/Code/ilri/eweigh-api/" :
+            "http://test.tickos.co.ke/eweigh/";
 
     // private static final String BASE_API_URL = BASE_URL + "api/v1/";
     private static final String BASE_API_URL = BASE_URL + "";

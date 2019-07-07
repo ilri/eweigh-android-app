@@ -1,9 +1,28 @@
-package org.ilri.eweigh.accounts;
+package org.ilri.eweigh.accounts.models;
 
 public class User {
 
-    public static final String FCM_TOKEN = "fcm_token";
+    /**
+     *
+     * Request/response vars
+     *
+     * */
+    public static final String ID = "id";
+    public static final String FULL_NAME = "fullname";
+    public static final String EMAIL = "email";
+    public static final String MOBILE = "mobile";
+    public static final String ID_NUMBER = "idnumber";
+    public static final String COUNTRY = "country";
+    public static final String COUNTY = "county";
+    public static final String COMPANY = "business";
+    public static final String PASSWORD = "password";
+    public static final String VERIFICATION_CODE = "verification_code";
 
+    /**
+     *
+     * Model vars
+     *
+     * */
     private int userId;
     private String fullName;
     private String email;
