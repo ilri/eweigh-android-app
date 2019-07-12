@@ -37,6 +37,6 @@
     <string name="logout">Logout</string>
     <string name="view_submissions">View Submissions</string>
     <string name="view_cattle">View Cattle</string>
-    <string name="no_submissions_yet">No submissions yet</string>
+    <string name="no_submissions_yet">No cattle yet</string>
     <string name="no_cattle_added_yet">No cattle added yet</string>
 </resources>
