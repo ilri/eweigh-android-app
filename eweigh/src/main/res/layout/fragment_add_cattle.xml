@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="10dp"
+    android:orientation="vertical">
+
+    <!--<Spinner-->
+        <!--android:id="@+id/spinner_breeds"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_weight="1"-->
+        <!--android:layout_marginBottom="8dp"-->
+        <!--android:padding="0dp"/>-->
+
+    <EditText
+        android:id="@+id/input_tag"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:hint="Cattle tag no."
+        android:inputType="number"/>
+
+    <EditText
+        android:id="@+id/input_breed"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:hint="Breed"
+        android:inputType="text" />
+
+    <EditText
+        android:id="@+id/input_hg"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:hint="Initial heart girth (cm)"
+        android:inputType="number" />
+
+</LinearLayout>

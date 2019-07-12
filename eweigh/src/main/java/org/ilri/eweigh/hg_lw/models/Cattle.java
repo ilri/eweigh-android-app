@@ -10,6 +10,7 @@ public class Cattle {
      * Response/request keys
      *
      * */
+    public static final String CATTLE = "cattle";
     public static final String ID = "id";
     public static final String USER_ID = "userid";
     public static final String TAG = "tag";

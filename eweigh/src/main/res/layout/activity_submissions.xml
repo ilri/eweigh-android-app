@@ -18,7 +18,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         style="@style/BlankState"
-        android:text="@string/no_submissions_yet"/>
+        android:text="@string/no_submissions_yet"
+        android:visibility="gone"/>
 
     <ListView
         android:id="@+id/list_view_submissions"
