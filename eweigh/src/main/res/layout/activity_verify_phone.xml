@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="@dimen/page_padding">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:textColor="@color/colorPrimary"
+        android:text="Enter verification code"
+        android:textAlignment="center"/>
+
+    <EditText
+        android:id="@+id/input_code"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="numberPassword"
+        android:hint="* * * *"
+        android:layout_marginTop="@dimen/page_padding"
+        android:layout_marginBottom="@dimen/page_padding"
+        android:textAlignment="center"
+        android:textSize="30sp"/>
+
+    <Button
+        android:id="@+id/btn_verify"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Verify"/>
+
+
+</LinearLayout>

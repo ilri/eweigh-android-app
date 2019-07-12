@@ -8,8 +8,7 @@ public class URL {
             "http://192.168.1.102/Code/ilri/eweigh-api/" :
             "http://test.tickos.co.ke/eweigh/";
 
-    // private static final String BASE_API_URL = BASE_URL + "api/v1/";
-    private static final String BASE_API_URL = BASE_URL + "";
+    private static final String BASE_API_URL = BASE_URL + "api/v1/";
     private static final String RESOURCE_URL = BASE_URL + "content/uploads/";
 
     // Resource URL
@@ -19,10 +18,13 @@ public class URL {
     public static final String Register = BASE_API_URL + "register";
     public static final String Login = BASE_API_URL + "login";
     public static final String UpdateAccount = BASE_API_URL + "user/update";
+    public static final String Verify = BASE_API_URL + "account/verify";
 
-    // Auth
-    public static final String GetLiveWeight = BASE_API_URL + "lw.php";
+    // HG/LW
+    public static final String GetLiveWeight = BASE_API_URL + "lw";
+    public static final String Cattle = BASE_API_URL + "cattle";
+    public static final String RegisterCattle = BASE_API_URL + "cattle/register";
 
     // Reports
-    public static final String History = BASE_API_URL + "report/history";
+    public static final String Submissions = BASE_API_URL + "report/submissions";
 }

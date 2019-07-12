@@ -14,10 +14,18 @@
         <item name="android:textSize">20sp</item>
     </style>
 
+    <style name="ProgressBarTheme">
+        <item name="android:layout_marginTop">50dp</item>
+    </style>
+
     <style name="FormLabelStyle">
         <item name="android:layout_marginTop">15dp</item>
         <item name="android:textColor">@color/colorAccent</item>
         <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="FormInputStyle">
+        <item name="android:layout_marginBottom">20dp</item>
     </style>
 
     <style name="FormNumberStyle">

@@ -7,16 +7,16 @@ public class User {
      * Request/response vars
      *
      * */
-    public static final String ID = "id";
+    public static final String ID = "userid";
     public static final String FULL_NAME = "fullname";
     public static final String EMAIL = "email";
     public static final String MOBILE = "mobile";
     public static final String ID_NUMBER = "idnumber";
     public static final String COUNTRY = "country";
     public static final String COUNTY = "county";
-    public static final String COMPANY = "business";
     public static final String PASSWORD = "password";
     public static final String VERIFICATION_CODE = "verification_code";
+    public static final String FCM_TOKEN = "fcm_token";
 
     /**
      *

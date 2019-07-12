@@ -8,6 +8,7 @@ import android.util.Log;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 
+import org.ilri.eweigh.accounts.models.User;
 import org.ilri.eweigh.network.APIService;
 import org.ilri.eweigh.network.RequestParams;
 import org.ilri.eweigh.utils.URL;
@@ -44,9 +45,15 @@ public class AccountUtils {
             editor.putString("name", user.getString("name"));
             editor.putString("email", user.getString("email"));
             editor.putString("mobile", user.getString("mobile"));
-            editor.putString("photo", user.getString("photo"));
-            editor.putInt("groupId", user.getInt("groupid"));
-            editor.putString("groupName",  user.getString("groupname"));
+            editor.putString("idno", user.getString("idno"));
+            editor.putString("photo", user.optString("photo", ""));
+
+            editor.putString("tag", user.optString("tag", "-"));
+            editor.putString("county", user.optString("county", "-"));
+            editor.putString("country", user.optString("country", "-"));
+
+            editor.putInt("groupId", user.optInt("groupid", 0));
+            editor.putString("groupName", user.optString("groupname", ""));
 
             editor.apply();
 
@@ -81,6 +88,11 @@ public class AccountUtils {
         editor.remove("email");
         editor.remove("mobile");
         editor.remove("photo");
+
+        editor.remove("tag");
+        editor.remove("county");
+        editor.remove("country");
+
         editor.remove("groupId");
         editor.remove("groupName");
 

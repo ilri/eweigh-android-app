@@ -2,14 +2,19 @@ package org.ilri.eweigh.hg_lw;
 
 import android.Manifest;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.LocationManager;
 import android.os.Build;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
+import android.provider.Settings;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -23,8 +28,12 @@ import com.android.volley.VolleyError;
 import com.marcinorlowski.fonty.Fonty;
 
 import org.ilri.eweigh.R;
+import org.ilri.eweigh.accounts.AccountUtils;
+import org.ilri.eweigh.accounts.models.User;
+import org.ilri.eweigh.hg_lw.models.Submission;
 import org.ilri.eweigh.network.APIService;
 import org.ilri.eweigh.network.RequestParams;
+import org.ilri.eweigh.utils.Constants;
 import org.ilri.eweigh.utils.URL;
 import org.ilri.eweigh.utils.Utils;
 import org.json.JSONException;
@@ -35,10 +44,8 @@ import locationprovider.davidserrano.com.LocationProvider;
 public class ConvertActivity extends AppCompatActivity {
     private static final String TAG = ConvertActivity.class.getSimpleName();
 
-    private static final int RC_PERMISSION_REQUEST_LOCATION = 100;
-
     EditText inputHG;
-    TextView txtLW;
+    TextView txtLW, txtMeta;
 
     double latitude = 0;
     double longitude = 0;
@@ -57,13 +64,19 @@ public class ConvertActivity extends AppCompatActivity {
         inputHG.requestFocus();
 
         txtLW = findViewById(R.id.txt_lw);
+        txtMeta = findViewById(R.id.txt_metadata);
 
         Button btn = findViewById(R.id.btn_submit_hg);
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                getLiveWeight();
+                if(TextUtils.isEmpty(inputHG.getText().toString())){
+                    inputHG.setError("Enter heart girth");
+                }
+                else{
+                    getLiveWeight();
+                }
             }
         });
 
@@ -75,20 +88,26 @@ public class ConvertActivity extends AppCompatActivity {
     private void getLiveWeight(){
         APIService apiService = new APIService(this);
 
-        final ProgressDialog dialog =
-                Utils.getProgressDialog(this, "Processing...", false);
-        dialog.show();
+        final ProgressDialog progressDialog = Utils.getProgressDialog(this, "Processing...", false);
+        final AlertDialog alertDialog = Utils.getSimpleDialog(ConvertActivity.this, "");
+
+        progressDialog.show();
+
+        AccountUtils accountUtils = new AccountUtils(this);
+        User user = accountUtils.getUserDetails();
 
         RequestParams params = new RequestParams();
-        params.put("hg", inputHG.getText().toString());
-        params.put("lat", String.valueOf(latitude));
-        params.put("lng", String.valueOf(longitude));
+
+        params.put(User.ID, String.valueOf(user.getUserId()));
+        params.put(Submission.HG, inputHG.getText().toString());
+        params.put(Submission.LAT, String.valueOf(latitude));
+        params.put(Submission.LNG, String.valueOf(longitude));
 
         apiService.post(URL.GetLiveWeight, params, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 Log.d(TAG, response);
-                dialog.dismiss();
+                progressDialog.dismiss();
 
                 try {
                     JSONObject obj = new JSONObject(response);
@@ -97,11 +116,17 @@ public class ConvertActivity extends AppCompatActivity {
                     String message = obj.optString("message", "_");
 
                     if(error){
-                        Toast.makeText(ConvertActivity.this, message, Toast.LENGTH_SHORT).show();
+                        alertDialog.setMessage(message);
+                        alertDialog.show();
                     }
                     else{
-                        double LW = obj.optDouble("lw", 0);
+                        double LW = obj.optDouble(Submission.LW, 0);
                         txtLW.setText(String.valueOf(LW));
+
+                        String meta = "Coordinates: " +
+                                obj.optString(Submission.LAT, "0") + ", " +
+                                obj.optString(Submission.LNG, "0");
+                        txtMeta.setText(meta);
                     }
 
                 } catch (JSONException e) {
@@ -111,9 +136,13 @@ public class ConvertActivity extends AppCompatActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(ConvertActivity.this, "An error occurred",
+                Log.e(TAG, "Post: " + error.getLocalizedMessage());
+                Toast.makeText(ConvertActivity.this, "Could not post data",
                         Toast.LENGTH_SHORT).show();
-                dialog.dismiss();
+                progressDialog.dismiss();
+
+                alertDialog.setMessage("Could not post data");
+                alertDialog.show();
             }
         });
     }
@@ -151,6 +180,43 @@ public class ConvertActivity extends AppCompatActivity {
         locationProvider.requestLocation();
     }
 
+    private void checkGPS(){
+        LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        boolean gpsEnabled = false;
+        boolean networkEnabled = false;
+
+        try {
+            gpsEnabled = lm.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        } catch(Exception ex) {}
+
+        try {
+            networkEnabled = lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+        } catch(Exception ex) {}
+
+        if(!gpsEnabled && !networkEnabled) {
+
+            new AlertDialog.Builder(this)
+                    .setMessage("GPS is not enabled")
+                    .setPositiveButton("Open Location Settings", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+                            startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                        }
+                    })
+                    .setCancelable(false)
+                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            finish();
+                        }
+                    })
+                    .show();
+        }
+        else{
+            initLocationUpdates();
+        }
+    }
+
     private void checkPermission(){
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -173,7 +239,7 @@ public class ConvertActivity extends AppCompatActivity {
                                     // Prompt the user once explanation has been shown
                                     ActivityCompat.requestPermissions(ConvertActivity.this,
                                             new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                                            RC_PERMISSION_REQUEST_LOCATION);
+                                            Constants.RC_PERMISSION_REQUEST_LOCATION);
                                 }
                             })
                             .create()
@@ -183,11 +249,11 @@ public class ConvertActivity extends AppCompatActivity {
 
                     ActivityCompat.requestPermissions(this,
                             new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                            RC_PERMISSION_REQUEST_LOCATION);
+                            Constants.RC_PERMISSION_REQUEST_LOCATION);
                 }
             }
             else{
-                initLocationUpdates();
+                checkGPS();
             }
         }
     }
@@ -197,7 +263,7 @@ public class ConvertActivity extends AppCompatActivity {
                                            String permissions[], int[] grantResults) {
         switch (requestCode) {
 
-            case RC_PERMISSION_REQUEST_LOCATION: {
+            case Constants.RC_PERMISSION_REQUEST_LOCATION: {
 
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -207,8 +273,7 @@ public class ConvertActivity extends AppCompatActivity {
                             Manifest.permission.ACCESS_FINE_LOCATION)
                             == PackageManager.PERMISSION_GRANTED){
 
-                        //Request location updates:
-                        initLocationUpdates();
+                        checkGPS();
                     }
 
                 }

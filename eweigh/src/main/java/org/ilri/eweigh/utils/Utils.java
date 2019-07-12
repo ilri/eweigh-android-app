@@ -5,7 +5,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.support.v7.app.AlertDialog;
+import androidx.appcompat.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
@@ -48,6 +48,11 @@ public class Utils {
     public static String formatNumber(double number){
         DecimalFormat formatter = new DecimalFormat("#,###,###.##");
         return formatter.format(number);
+    }
+
+    public static String formatDecimal(double number){
+        DecimalFormat df = new DecimalFormat("0.00");
+        return df.format(number);
     }
 
     public static boolean isNetworkAvailable(Context context){

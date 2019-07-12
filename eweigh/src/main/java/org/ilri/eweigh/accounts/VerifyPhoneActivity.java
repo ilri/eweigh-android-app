@@ -3,7 +3,7 @@ package org.ilri.eweigh.accounts;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -13,15 +13,15 @@ import android.widget.Toast;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 
+import org.ilri.eweigh.MainActivity;
+import org.ilri.eweigh.R;
+import org.ilri.eweigh.accounts.models.User;
+import org.ilri.eweigh.network.APIService;
+import org.ilri.eweigh.network.RequestParams;
+import org.ilri.eweigh.utils.URL;
+import org.ilri.eweigh.utils.Utils;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import susafric.com.sokobora.HomeActivity;
-import susafric.com.sokobora.R;
-import susafric.com.sokobora.network.APIService;
-import susafric.com.sokobora.network.RequestParams;
-import susafric.com.sokobora.utils.URL;
-import susafric.com.sokobora.utils.Utils;
 
 public class VerifyPhoneActivity extends AppCompatActivity {
     public static final String TAG = VerifyPhoneActivity.class.getSimpleName();
@@ -85,7 +85,7 @@ public class VerifyPhoneActivity extends AppCompatActivity {
                     }
 
                     if(obj.has("success")){
-                        startActivity(new Intent(VerifyPhoneActivity.this, HomeActivity.class));
+                        startActivity(new Intent(VerifyPhoneActivity.this, MainActivity.class));
                         finish();
                     }
 

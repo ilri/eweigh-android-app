@@ -50,4 +50,12 @@
         android:layout_height="wrap_content"
         android:text="@string/zero"/>
 
+    <TextView
+        android:id="@+id/txt_metadata"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:textColor="@color/darkGray"
+        android:text="Metadata"/>
+
 </LinearLayout>

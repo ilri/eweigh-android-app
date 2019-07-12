@@ -3,7 +3,9 @@ package org.ilri.eweigh.accounts;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -13,21 +15,20 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.marcinorlowski.fonty.Fonty;
 
+import org.ilri.eweigh.HomeActivity;
 import org.ilri.eweigh.MainActivity;
 import org.ilri.eweigh.R;
-import org.ilri.eweigh.network.MySingleton;
+import org.ilri.eweigh.accounts.models.User;
+import org.ilri.eweigh.network.APIService;
+import org.ilri.eweigh.network.RequestParams;
 import org.ilri.eweigh.utils.URL;
+import org.ilri.eweigh.utils.Utils;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * A login screen that offers login via email/password.
@@ -37,11 +38,9 @@ public class LoginActivity extends AppCompatActivity {
 
     AutoCompleteTextView txtEmail;
     EditText txtPassword;
-    ProgressDialog loginProgress;
+    ProgressDialog progressDialog;
 
     AccountUtils accountUtils;
-
-    URL urlStr = new URL();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,17 +56,10 @@ public class LoginActivity extends AppCompatActivity {
         txtEmail = findViewById(R.id.edit_txt_email);
         txtPassword = findViewById(R.id.edit_txt_password);
 
-        Button mEmailSignInButton = findViewById(R.id.btn_sign_in);
-        mEmailSignInButton.setOnClickListener(new OnClickListener() {
+        Button btnSignIn = findViewById(R.id.btn_sign_in);
+        btnSignIn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                loginProgress = new ProgressDialog(LoginActivity.this);
-
-                loginProgress.setMessage("Logging in...");
-                loginProgress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-                loginProgress.show();
-
                 attemptLogin();
             }
         });
@@ -77,39 +69,22 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void attemptLogin() {
-
-        // Reset errors.
         txtEmail.setError(null);
         txtPassword.setError(null);
 
-        // Store values at the time of the login attempt.
         String email = txtEmail.getText().toString();
         String password = txtPassword.getText().toString();
 
-        boolean cancel = false;
-        View focusView = null;
-
-        // Check for a valid password, if the user entered one.
-        if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
-            txtPassword.setError("Enter a valid password");
-            focusView = txtPassword;
-            cancel = true;
-        }
-
-        // Check for a valid email address.
         if (TextUtils.isEmpty(email)) {
             txtEmail.setError("Email is required");
-            focusView = txtEmail;
-            cancel = true;
-        } else if (!isEmailValid(email)) {
-            txtEmail.setError("Enter a valid email");
-            focusView = txtEmail;
-            cancel = true;
         }
-
-        if (cancel) {
-            focusView.requestFocus();
-        } else {
+        else if (!isEmailValid(email)) {
+            txtEmail.setError("Enter a valid email");
+        }
+        else if (TextUtils.isEmpty(password)) {
+            txtEmail.setError("Enter your password");
+        }
+        else{
             processLogin(email, password);
         }
     }
@@ -118,13 +93,14 @@ public class LoginActivity extends AppCompatActivity {
         return email.contains("@");
     }
 
-    private boolean isPasswordValid(String password) {
-        return password.length() > 4;
-    }
-
     private void processLogin(final String email, final String password){
-
         JSONObject loginObj = new JSONObject();
+
+        progressDialog = new ProgressDialog(LoginActivity.this);
+
+        progressDialog.setMessage("Logging in...");
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progressDialog.show();
 
         try {
             loginObj.put("email", email);
@@ -134,66 +110,53 @@ public class LoginActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST, urlStr.Login,
-                loginObj,
-                new Response.Listener<JSONObject>()
-                {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        Log.d(TAG, response.toString());
+        final AlertDialog alertDialog = Utils.getSimpleDialog(this, "");
 
-                        loginProgress.dismiss();
+        APIService apiService = new APIService(this);
 
-                        try {
-                            if(response.has("message")){
-                                Toast.makeText(LoginActivity.this,
-                                        response.getString("message"), Toast.LENGTH_SHORT).show();
-                            }
+        RequestParams params = new RequestParams();
+        params.put(User.EMAIL, email);
+        params.put(User.PASSWORD, password);
 
-                            if(response.has("user")){
-                                JSONObject user = (JSONObject) response.get("user");
-                                String name = user.getString("name");
+        apiService.post(URL.Login, params, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                Log.d(TAG, response);
+                progressDialog.dismiss();
 
-                                // Store user locally
-                                accountUtils.persistUser(user);
+                try {
+                    JSONObject obj = new JSONObject(response);
 
-                                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                                startActivity(intent);
-                                finish(); // Remove login from back stack
-                            }
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
+                    if (obj.has("message")) {
+                        alertDialog.setMessage(obj.getString("message"));
+                        alertDialog.show();
                     }
-                },
-                new Response.ErrorListener()
-                {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.d("Error.Response", error.toString());
-                        loginProgress.dismiss();
 
-                        Toast.makeText(LoginActivity.this, "Network Error",
-                                Toast.LENGTH_SHORT).show();
+                    if (obj.has("user")) {
+                        JSONObject user = obj.getJSONObject("user");
+
+                        accountUtils.persistUser(user);
+
+                        Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(intent);
+                        finish();
                     }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
-        ) {
-            @Override
-            public String getBodyContentType() {
-                return "application/json; charset=utf-8";
             }
-
+        }, new Response.ErrorListener() {
             @Override
-            public Map<String, String> getHeaders() {
-                HashMap<String, String> headers = new HashMap<>();
-                headers.put("Content-Type", "application/json; charset=utf-8");
-                return headers;
-            }
-        };
+            public void onErrorResponse(VolleyError error) {
+                Log.d("Error.Response", error.toString());
+                progressDialog.dismiss();
 
-        MySingleton.getInstance(this).addToRequestQueue(req);
+                Toast.makeText(LoginActivity.this, "Network Error",
+                        Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }
 

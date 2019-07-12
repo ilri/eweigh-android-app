@@ -3,7 +3,7 @@ package org.ilri.eweigh.accounts;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -56,7 +56,6 @@ public class RegisterActivity extends AppCompatActivity {
         inputEmail = findViewById(R.id.input_email);
         inputMobile = findViewById(R.id.input_mobile);
         inputIdNumber = findViewById(R.id.input_id_number);
-        inputCompany = findViewById(R.id.input_company);
         inputPassword = findViewById(R.id.input_password);
 
         spinnerCountries = findViewById(R.id.spinner_countries);
@@ -93,7 +92,6 @@ public class RegisterActivity extends AppCompatActivity {
         String idNumber = inputIdNumber.getText().toString();
         String country = String.valueOf(ctr.getId());
         String county = String.valueOf(ct.getId());
-        String company = inputCompany.getText().toString();
         String password = inputPassword.getText().toString();
 
         if(name.equals("")){
@@ -128,7 +126,6 @@ public class RegisterActivity extends AppCompatActivity {
             params.put(User.ID_NUMBER, idNumber);
             params.put(User.COUNTRY, country);
             params.put(User.COUNTY, county);
-            params.put(User.COMPANY, company);
             params.put(User.PASSWORD, password);
 
             apiService.post(URL.Register, params, new Response.Listener<String>() {
