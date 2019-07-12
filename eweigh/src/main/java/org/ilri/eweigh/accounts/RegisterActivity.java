@@ -16,6 +16,7 @@ import android.widget.Toast;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 
+import org.ilri.eweigh.HomeActivity;
 import org.ilri.eweigh.R;
 import org.ilri.eweigh.accounts.models.User;
 import org.ilri.eweigh.misc.Country;
@@ -55,16 +56,16 @@ public class RegisterActivity extends AppCompatActivity {
         inputName = findViewById(R.id.input_full_name);
         inputEmail = findViewById(R.id.input_email);
         inputMobile = findViewById(R.id.input_mobile);
-        inputIdNumber = findViewById(R.id.input_id_number);
+        // inputIdNumber = findViewById(R.id.input_id_number);
         inputPassword = findViewById(R.id.input_password);
 
-        spinnerCountries = findViewById(R.id.spinner_countries);
+//        spinnerCountries = findViewById(R.id.spinner_countries);
         spinnerCounties = findViewById(R.id.spinner_counties);
 
         // populate countries
-        ArrayAdapter<Country> adapter = new ArrayAdapter<>(this,
-                android.R.layout.simple_spinner_dropdown_item, Utils.getCountriesList());
-        spinnerCountries.setAdapter(adapter);
+//        ArrayAdapter<Country> adapter = new ArrayAdapter<>(this,
+//                android.R.layout.simple_spinner_dropdown_item, Utils.getCountriesList());
+//        spinnerCountries.setAdapter(adapter);
 
         // populate counties
         ArrayAdapter<County> adapter2 = new ArrayAdapter<>(this,
@@ -83,14 +84,14 @@ public class RegisterActivity extends AppCompatActivity {
     private void registerUser(){
         APIService apiService = new APIService(this);
 
-        Country ctr = (Country) spinnerCountries.getSelectedItem();
+//        Country ctr = (Country) spinnerCountries.getSelectedItem();
         County ct = (County) spinnerCounties.getSelectedItem();
 
         String name = inputName.getText().toString();
         String email = inputEmail.getText().toString();
         String mobile = inputMobile.getText().toString();
-        String idNumber = inputIdNumber.getText().toString();
-        String country = String.valueOf(ctr.getId());
+//        String idNumber = inputIdNumber.getText().toString();
+//        String country = String.valueOf(ctr.getId());
         String county = String.valueOf(ct.getId());
         String password = inputPassword.getText().toString();
 
@@ -103,12 +104,12 @@ public class RegisterActivity extends AppCompatActivity {
         else if(mobile.equals("")){
             Toast.makeText(this, "Mobile No. is required", Toast.LENGTH_SHORT).show();
         }
-        else if(idNumber.equals("")){
-            Toast.makeText(this, "ID Number is required", Toast.LENGTH_SHORT).show();
-        }
-        else if(country.equals("")){
-            Toast.makeText(this, "Country is required", Toast.LENGTH_SHORT).show();
-        }
+//        else if(idNumber.equals("")){
+//            Toast.makeText(this, "ID Number is required", Toast.LENGTH_SHORT).show();
+//        }
+//        else if(country.equals("")){
+//            Toast.makeText(this, "Country is required", Toast.LENGTH_SHORT).show();
+//        }
         else if(county.equals("")){
             Toast.makeText(this, "County is required", Toast.LENGTH_SHORT).show();
         }
@@ -123,8 +124,8 @@ public class RegisterActivity extends AppCompatActivity {
             params.put(User.FULL_NAME, name);
             params.put(User.EMAIL, email);
             params.put(User.MOBILE, mobile);
-            params.put(User.ID_NUMBER, idNumber);
-            params.put(User.COUNTRY, country);
+//            params.put(User.ID_NUMBER, idNumber);
+//            params.put(User.COUNTRY, country);
             params.put(User.COUNTY, county);
             params.put(User.PASSWORD, password);
 
@@ -149,8 +150,12 @@ public class RegisterActivity extends AppCompatActivity {
                             accountUtils.persistUser(obj);
 
                             // On successful registration, SMS is sent to validate phone number
-                            Intent intent = new Intent(RegisterActivity.this,
-                                    VerifyPhoneActivity.class);
+//                            Intent intent = new Intent(RegisterActivity.this,
+//                                    VerifyPhoneActivity.class);
+
+                            // On register move to home
+                            Intent intent = new Intent(RegisterActivity.this, HomeActivity.class);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                             startActivity(intent);
                             finish();
                         }

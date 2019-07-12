@@ -22,7 +22,7 @@
 
     <!-- Register -->
     <string name="register">Register</string>
-    <string name="country">County</string>
+    <string name="country">Country</string>
     <string name="county">County</string>
     <string name="id_number">ID Number</string>
     <string name="full_name">Full Name</string>
@@ -37,6 +37,6 @@
     <string name="logout">Logout</string>
     <string name="view_submissions">View Submissions</string>
     <string name="view_cattle">View Cattle</string>
-    <string name="no_submissions_yet">No cattle yet</string>
+    <string name="no_submissions_yet">No submissions added yet</string>
     <string name="no_cattle_added_yet">No cattle added yet</string>
 </resources>

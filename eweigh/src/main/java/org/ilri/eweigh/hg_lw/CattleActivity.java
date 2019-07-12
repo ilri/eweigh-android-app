@@ -177,7 +177,7 @@ public class CattleActivity extends AppCompatActivity implements AdapterView.OnI
                 })
                 .setNeutralButton("Cancel", null);
 
-        builder.create();
+        builder.create().show();
     }
 
     private void renderList(List<Cattle> cattle){
