@@ -5,7 +5,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -20,6 +22,7 @@ import org.ilri.eweigh.hg_lw.SubmissionsActivity;
 import org.ilri.eweigh.utils.Utils;
 
 public class HomeActivity extends AppCompatActivity implements View.OnClickListener {
+    public static final String TAG = HomeActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +40,12 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
         Button btnAbout = findViewById(R.id.btn_about);
         btnAbout.setOnClickListener(this);
+
+        String[] locales = Resources.getSystem().getAssets().getLocales();
+
+        for (String l : locales){
+            Log.d(TAG, "Locale: " + l + "\n");
+        }
     }
 
     @Override

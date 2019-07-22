@@ -154,7 +154,6 @@ public class LoginActivity extends AppCompatActivity {
             public void onErrorResponse(VolleyError error) {
                 Log.d("Error.Response", error.toString());
                 progressDialog.dismiss();
-
                 Toast.makeText(LoginActivity.this, "Network Error",
                         Toast.LENGTH_SHORT).show();
             }
