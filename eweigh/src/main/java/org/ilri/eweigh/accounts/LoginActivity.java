@@ -49,7 +49,7 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         if(getSupportActionBar() != null){
-            getSupportActionBar().setTitle("Login");
+            getSupportActionBar().setTitle(getString(R.string.log_in));
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 

@@ -2,6 +2,7 @@ package org.ilri.eweigh;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProviders;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -12,14 +13,23 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
+
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
 
 import org.ilri.eweigh.accounts.AccountUtils;
-import org.ilri.eweigh.accounts.LoginActivity;
 import org.ilri.eweigh.accounts.MyAccountActivity;
+import org.ilri.eweigh.feeds.Feed;
+import org.ilri.eweigh.database.viewmodel.FeedsViewModel;
 import org.ilri.eweigh.hg_lw.CattleActivity;
 import org.ilri.eweigh.hg_lw.ConvertActivity;
 import org.ilri.eweigh.hg_lw.SubmissionsActivity;
+import org.ilri.eweigh.network.APIService;
+import org.ilri.eweigh.utils.URL;
 import org.ilri.eweigh.utils.Utils;
+import org.json.JSONArray;
+import org.json.JSONException;
 
 public class HomeActivity extends AppCompatActivity implements View.OnClickListener {
     public static final String TAG = HomeActivity.class.getSimpleName();
@@ -30,6 +40,9 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_home);
 
         Button btnLW = findViewById(R.id.btn_get_lw);
+        btnLW.setOnClickListener(this);
+
+        Button btnFeedRation = findViewById(R.id.btn_get_lw);
         btnLW.setOnClickListener(this);
 
         Button btnSubmissions = findViewById(R.id.btn_view_submissions);
@@ -46,6 +59,39 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         for (String l : locales){
             Log.d(TAG, "Locale: " + l + "\n");
         }
+
+        fetchFeeds();
+    }
+
+    private void fetchFeeds(){
+        final FeedsViewModel fvm = ViewModelProviders.of(this).get(FeedsViewModel.class);
+
+        new APIService(this)
+                .get(URL.FeedsList, new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        fvm.deleteAll();
+
+                        try {
+                            JSONArray arr = new JSONArray(response);
+
+                            for (int i=0; i<arr.length(); i++) {
+                                Feed f = new Feed(arr.getJSONObject(i));
+                                fvm.insert(f);
+                            }
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(HomeActivity.this,
+                                "Could not fetch feeds list", Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
     @Override

@@ -27,7 +27,7 @@
     <string name="email_mobile_no">Email/Mobile No.</string>
     <string name="email_address">Email Address</string>
     <string name="password">Password</string>
-    <string name="don_t_have_an_account">Don't have an account?</string>
+    <string name="don_t_have_an_account">Don\\\'t have an account?</string>
     <string name="create_one">Create one</string>
     <string name="my_profile">My Profile</string>
     <string name="logout">Logout</string>
@@ -37,4 +37,5 @@
     <string name="no_cattle_added_yet">No cattle added yet</string>
     <string name="full_name">Full Name</string>
     <string name="live_weight_label">Live Weight</string>
+    <string name="get_feed_ration">Get Feed Ration</string>
 </resources>

@@ -3,11 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="org.ilri.eweigh">
 
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-
     <application
         android:name=".utils.AppController"
         android:allowBackup="true"
@@ -18,7 +13,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning,UnusedAttribute">
-        <activity android:name=".hg_lw.CattleActivity"></activity>
+        <activity android:name=".feeds.CalculateFeedActivity"></activity>
+        <activity android:name=".hg_lw.CattleActivity" />
         <activity android:name=".hg_lw.SubmissionsActivity" />
         <activity android:name=".SplashActivity">
             <intent-filter>
@@ -35,5 +31,10 @@
         <activity android:name=".hg_lw.ConvertActivity" />
         <activity android:name=".AboutActivity" />
     </application>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
+    <uses-permission android:name="android.permission.INTERNET" />
 
 </manifest>

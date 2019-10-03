@@ -24,6 +24,13 @@
         android:text="@string/get_live_weight"/>
 
     <Button
+        android:id="@+id/btn_get_feed_ration"
+        style="@style/HomeButtonStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/get_feed_ration"/>
+
+    <Button
         android:id="@+id/btn_view_submissions"
         style="@style/HomeButtonStyle"
         android:layout_width="match_parent"

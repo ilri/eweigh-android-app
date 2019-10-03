@@ -5,7 +5,7 @@ import org.ilri.eweigh.BuildConfig;
 public class URL {
 
     private static String BASE_URL = BuildConfig.DEBUG ?
-            "http://192.168.1.102/Code/ilri/eweigh-api/" :
+            "http://192.168.1.104/Code/ilri/eweigh-api/" :
             "http://test.tickos.co.ke/eweigh/";
 
     private static final String BASE_API_URL = BASE_URL + "api/v1/";
@@ -24,6 +24,10 @@ public class URL {
     public static final String GetLiveWeight = BASE_API_URL + "lw";
     public static final String Cattle = BASE_API_URL + "cattle";
     public static final String RegisterCattle = BASE_API_URL + "cattle/register";
+
+    // Feeds
+    public static final String FeedsList = BASE_API_URL + "feeds";
+    public static final String GetFeedRation = BASE_API_URL + "feeds/ration";
 
     // Reports
     public static final String Submissions = BASE_API_URL + "report/submissions";
