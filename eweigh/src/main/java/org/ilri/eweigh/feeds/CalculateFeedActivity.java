@@ -5,6 +5,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import android.app.ProgressDialog;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -12,7 +13,9 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ScrollView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Response;
@@ -25,6 +28,8 @@ import org.ilri.eweigh.network.APIService;
 import org.ilri.eweigh.network.RequestParams;
 import org.ilri.eweigh.utils.URL;
 import org.ilri.eweigh.utils.Utils;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -172,6 +177,31 @@ public class CalculateFeedActivity extends AppCompatActivity {
                 Log.d(TAG, response);
                 progressDialog.dismiss();
 
+                TextView txtRation = findViewById(R.id.txt_feed_ration);
+
+                try {
+                    JSONObject res = new JSONObject(response);
+
+                    if(res.has("error") && res.getBoolean("error")){
+                        txtRation.setText(res.optString("message", "-"));
+                        txtRation.setTextColor(Color.RED);
+                    }
+                    else{
+
+                        String ration = "RATION AS FED: \n\n" +
+                                "Forage: " + res.optDouble("forage", 0) + " kg\n" +
+                                "Concentrate: " + res.optDouble("concentrate", 0) + " kg";
+
+                        txtRation.setText(ration);
+                        txtRation.setTextColor(Color.BLUE);
+                    }
+
+                    ScrollView scrollView = findViewById(R.id.scrollView);
+                    scrollView.fullScroll(View.FOCUS_DOWN);
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
         }, new Response.ErrorListener() {
             @Override
