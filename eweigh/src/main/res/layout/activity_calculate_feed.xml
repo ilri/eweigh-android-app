@@ -12,11 +12,6 @@
         android:orientation="vertical"
         android:padding="12dp">
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Enter the details below:"/>
-
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -38,9 +33,45 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:text="Select feed style:"
+            android:layout_marginBottom="2dp"
+            android:layout_marginTop="6dp"/>
+
+        <RadioGroup
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="0dp">
+
+            <RadioButton
+                android:id="@+id/radio_stall_fed"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Stall fed"
+                android:checked="true"
+                android:onClick="onFeedStyleRadioChanged"/>
+
+            <RadioButton
+                android:id="@+id/radio_graze_local"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Grazed locally"
+                android:onClick="onFeedStyleRadioChanged"/>
+
+            <RadioButton
+                android:id="@+id/radio_graze_extensive"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Grazed extensively"
+                android:onClick="onFeedStyleRadioChanged"/>
+        </RadioGroup>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:text="Select feed purpose:"
             android:layout_marginBottom="2dp"
-            android:layout_marginTop="3dp"/>
+            android:layout_marginTop="6dp"/>
 
         <RadioGroup
             android:layout_width="match_parent"
@@ -53,15 +84,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Milk Production"
-                android:checked="true"
-                android:onClick="onRadioButtonClicked"/>
+                android:onClick="onFeedForRadioChanged"/>
 
             <RadioButton
                 android:id="@+id/radio_weight_gain"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Weight Gain"
-                android:onClick="onRadioButtonClicked"/>
+                android:onClick="onFeedForRadioChanged"/>
         </RadioGroup>
 
         <com.google.android.material.textfield.TextInputLayout
@@ -72,13 +102,14 @@
                 android:id="@+id/edit_txt_milk_production"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Milk production (litres)"
+                android:hint="Milk production (litres/day)"
                 android:imeActionId="6"
                 android:imeActionLabel="Milk production (litres)"
                 android:imeOptions="actionUnspecified"
                 android:inputType="number"
                 android:maxLines="1"
-                android:singleLine="true" />
+                android:singleLine="true"
+                android:visibility="gone" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -96,7 +127,8 @@
                 android:imeOptions="actionUnspecified"
                 android:inputType="number"
                 android:maxLines="1"
-                android:singleLine="true" />
+                android:singleLine="true"
+                android:visibility="gone" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -114,34 +146,57 @@
                 android:imeOptions="actionUnspecified"
                 android:inputType="date"
                 android:maxLines="1"
-                android:singleLine="true" />
+                android:singleLine="true"
+                android:visibility="gone" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Select Forage"/>
+            android:text="Select feeds:"
+            android:layout_marginTop="6dp"/>
 
-        <Spinner
-            android:id="@+id/spinner_forage"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:padding="0dp"/>
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <Spinner
+                    android:id="@+id/spinner_forage"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:padding="0dp"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <Spinner
+                    android:id="@+id/spinner_concentrate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:padding="0dp"/>
+            </LinearLayout>
+        </LinearLayout>
 
         <TextView
+            android:id="@+id/txt_feed_ration"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Select Concentrate"/>
-
-        <Spinner
-            android:id="@+id/spinner_concentrate"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:padding="0dp"/>
-
+            android:textStyle="bold"
+            android:textSize="16sp"/>
 
     </LinearLayout>
 

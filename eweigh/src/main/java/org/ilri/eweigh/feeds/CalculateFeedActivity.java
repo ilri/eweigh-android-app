@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -12,6 +13,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -22,6 +24,7 @@ import org.ilri.eweigh.database.viewmodel.FeedsViewModel;
 import org.ilri.eweigh.network.APIService;
 import org.ilri.eweigh.network.RequestParams;
 import org.ilri.eweigh.utils.URL;
+import org.ilri.eweigh.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +38,7 @@ public class CalculateFeedActivity extends AppCompatActivity {
     Spinner spinnerForage, spinnerConcentrate;
 
     String feedFor = Feed.FEED_FOR_MILK;
+    String feedStyle = Feed.FEED_STYLE_STALL;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,8 +71,8 @@ public class CalculateFeedActivity extends AppCompatActivity {
                 ArrayList<Feed> forageFeeds = new ArrayList<>();
                 ArrayList<Feed> concentrateFeeds = new ArrayList<>();
 
-                forageFeeds.add(new Feed(0, "- Select Forage -"));
-                concentrateFeeds.add(new Feed(0, "- Select Concentrate -"));
+                forageFeeds.add(new Feed(0, "Select Forage"));
+                concentrateFeeds.add(new Feed(0, "Select Concentrate"));
 
                 for(Feed f : feeds){
 
@@ -96,8 +100,45 @@ public class CalculateFeedActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                // Validate forms
-                getFeedRation();
+                Feed forage = (Feed) spinnerForage.getSelectedItem();
+                Feed concentrate = (Feed) spinnerConcentrate.getSelectedItem();
+
+                String liveWeight = editLiveWeight.getText().toString();
+                String milkProduction = editMilkProduction.getText().toString();
+                String targetWeight = editTargetWeight.getText().toString();
+                String targetDate = editTargetDate.getText().toString();
+
+                if(liveWeight.isEmpty()){
+                    editLiveWeight.setError("Enter live weight");
+                }
+                else if(feedFor.isEmpty()){
+                    Toast.makeText(CalculateFeedActivity.this,
+                            "Select purpose for feed", Toast.LENGTH_SHORT).show();
+                }
+                else if(feedFor.equals(Feed.FEED_FOR_MILK) && milkProduction.isEmpty()){
+                    editMilkProduction.setError("Enter milk production");
+                }
+                else if(feedFor.equals(Feed.FEED_FOR_WEIGHT) && targetWeight.isEmpty()){
+                    editTargetWeight.setError("Enter target weight");
+                }
+                else if(feedFor.equals(Feed.FEED_FOR_WEIGHT) && targetDate.isEmpty()){
+                    editMilkProduction.setError("Enter target date");
+                }
+                else if(feedFor.equals(Feed.FEED_FOR_WEIGHT) &&
+                        (Double.parseDouble(liveWeight) > Double.parseDouble(targetWeight))){
+                    editTargetWeight.setError("Target weight should be greater than live weight");
+                }
+                else if(forage.getId() == 0){
+                    Toast.makeText(CalculateFeedActivity.this,
+                            "Select Forage", Toast.LENGTH_SHORT).show();
+                }
+                else if(concentrate.getId() == 0){
+                    Toast.makeText(CalculateFeedActivity.this,
+                            "Select Concentrate", Toast.LENGTH_SHORT).show();
+                }
+                else{
+                    getFeedRation();
+                }
             }
         });
 
@@ -109,24 +150,55 @@ public class CalculateFeedActivity extends AppCompatActivity {
 
         params.put(Feed.LIVE_WEIGHT, editLiveWeight.getText().toString());
         params.put(Feed.FEED_FOR, feedFor);
+        params.put(Feed.FEED_STYLE, feedStyle);
         params.put(Feed.MILK_PRODUCTION, editMilkProduction.getText().toString());
         params.put(Feed.TARGET_WEIGHT, editTargetWeight.getText().toString());
-        params.put(Feed.TARGET_DATE, editTargetWeight.getText().toString());
+        params.put(Feed.TARGET_DATE, editTargetDate.getText().toString());
+
+        Feed forage = (Feed) spinnerForage.getSelectedItem();
+        Feed concentrate = (Feed) spinnerConcentrate.getSelectedItem();
+
+        params.put(Feed.FORAGE, String.valueOf(forage.getId()));
+        params.put(Feed.CONCENTRATE, String.valueOf(concentrate.getId()));
+
+        final ProgressDialog progressDialog =
+                Utils.getProgressDialog(this, "Calculating feed...", false);
+
+        progressDialog.show();
 
         new APIService(this).post(URL.GetFeedRation, params, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 Log.d(TAG, response);
+                progressDialog.dismiss();
+
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-
+                progressDialog.dismiss();
             }
         });
     }
 
-    public void onRadioButtonClicked(View v){
+    public void onFeedStyleRadioChanged(View v){
+        switch (v.getId()) {
+
+            case R.id.radio_stall_fed:
+                feedStyle = Feed.FEED_STYLE_STALL;
+                break;
+
+            case R.id.radio_graze_local:
+                feedStyle = Feed.FEED_STYLE_GRAZE_LOCAL;
+                break;
+
+            case R.id.radio_graze_extensive:
+                feedStyle = Feed.FEED_STYLE_GRAZE_EXT;
+                break;
+        }
+    }
+
+    public void onFeedForRadioChanged(View v){
 
         switch (v.getId()) {
 

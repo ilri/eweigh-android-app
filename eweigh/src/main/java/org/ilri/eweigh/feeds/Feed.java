@@ -22,6 +22,10 @@ public class Feed implements Serializable {
     public static final String FEED_FOR_MILK = "milk";
     public static final String FEED_FOR_WEIGHT = "weight";
 
+    public static final String FEED_STYLE_STALL = "stall";
+    public static final String FEED_STYLE_GRAZE_LOCAL = "graze_local";
+    public static final String FEED_STYLE_GRAZE_EXT = "graze_ext";
+
     /**
      *
      * Request/Response keys
@@ -38,9 +42,12 @@ public class Feed implements Serializable {
 
     public static final String LIVE_WEIGHT = "lw";
     public static final String FEED_FOR = "feedfor";
-    public static final String MILK_PRODUCTION = "milklt";
+    public static final String FEED_STYLE = "feedstyle";
+    public static final String MILK_PRODUCTION = "milkprod";
     public static final String TARGET_WEIGHT = "weight";
     public static final String TARGET_DATE = "date";
+    public static final String FORAGE = "forage";
+    public static final String CONCENTRATE = "concentrate";
 
     /**
      *

@@ -20,6 +20,7 @@ import com.android.volley.VolleyError;
 
 import org.ilri.eweigh.accounts.AccountUtils;
 import org.ilri.eweigh.accounts.MyAccountActivity;
+import org.ilri.eweigh.feeds.CalculateFeedActivity;
 import org.ilri.eweigh.feeds.Feed;
 import org.ilri.eweigh.database.viewmodel.FeedsViewModel;
 import org.ilri.eweigh.hg_lw.CattleActivity;
@@ -42,8 +43,8 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         Button btnLW = findViewById(R.id.btn_get_lw);
         btnLW.setOnClickListener(this);
 
-        Button btnFeedRation = findViewById(R.id.btn_get_lw);
-        btnLW.setOnClickListener(this);
+        Button btnGetFeedRation = findViewById(R.id.btn_get_feed_ration);
+        btnGetFeedRation.setOnClickListener(this);
 
         Button btnSubmissions = findViewById(R.id.btn_view_submissions);
         btnSubmissions.setOnClickListener(this);
@@ -101,6 +102,10 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
             case R.id.btn_get_lw:
                 startActivity(new Intent(this, ConvertActivity.class));
+                break;
+
+            case R.id.btn_get_feed_ration:
+                startActivity(new Intent(this, CalculateFeedActivity.class));
                 break;
 
             case R.id.btn_view_submissions:

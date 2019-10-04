@@ -23,10 +23,10 @@ import java.util.List;
 @Dao
 public interface FeedsDao {
 
-    @Query("SELECT * FROM feeds")
+    @Query("SELECT * FROM feeds ORDER BY feedName ASC")
     LiveData<List<Feed>> get();
 
-    @Query("SELECT * FROM feeds WHERE feedType = :feedType")
+    @Query("SELECT * FROM feeds WHERE feedType = :feedType ORDER BY feedName ASC")
     LiveData<List<Feed>> getAllByFeedType(String feedType);
 
     @Query("SELECT COUNT(id) FROM feeds")
