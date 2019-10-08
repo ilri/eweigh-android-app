@@ -280,6 +280,7 @@ public class ConvertActivity extends AppCompatActivity {
                 else{
                     Toast.makeText(this, "You need to allow location permission",
                             Toast.LENGTH_SHORT).show();
+                    checkGPS();
                 }
                 break;
             }

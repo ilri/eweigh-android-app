@@ -23,9 +23,9 @@ public class AppController extends Application {
 
         // Set custom fonts
         Fonty.context(this)
-            .normalTypeface("Roboto-Light.ttf")
-            .boldTypeface("Roboto-Bold.ttf")
-            .italicTypeface("Roboto-LightItalic.ttf")
+            .normalTypeface("Lato-Regular.ttf")
+            .boldTypeface("Lato-Bold.ttf")
+            .italicTypeface("Lato-Italic.ttf")
             .done();
 
         // Update locale

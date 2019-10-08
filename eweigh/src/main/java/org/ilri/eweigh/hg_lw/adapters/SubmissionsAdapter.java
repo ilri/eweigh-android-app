@@ -55,8 +55,8 @@ public class SubmissionsAdapter extends BaseAdapter {
         Submission s = (Submission) getItem(position);
 
         String liveWeight = Utils.formatDecimal(s.getLw());
-        String metadata = "Heart Girth: " + s.getHg() + "\n" +
-                "Coordinates: " + s.getLat() + ", " + s.getLng() + "\n" +
+        String metadata = "Heart Girth: " + (int) s.getHg() + "\n" +
+                // "Coordinates: " + s.getLat() + ", " + s.getLng() + "\n" +
                 "Submitted on: " + s.getCreatedOn();
 
         ((TextView) view.findViewById(R.id.txt_lw)).setText(liveWeight);
