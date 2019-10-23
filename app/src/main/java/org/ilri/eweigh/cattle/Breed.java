@@ -2,7 +2,10 @@ package org.ilri.eweigh.cattle;
 
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
+import androidx.room.Ignore;
+import androidx.room.PrimaryKey;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -25,7 +28,10 @@ public class Breed implements Serializable {
      * Model vars
      *
      * */
+
+    @PrimaryKey
     private int id;
+
     private String breed, matureWeight;
 
     public Breed(){}
@@ -77,8 +83,18 @@ public class Breed implements Serializable {
         this.matureWeight = matureWeight;
     }
 
+    /**
+     *
+     * Model functions
+     *
+     * */
+
     @Override
     public String toString() {
         return breed;
+    }
+
+    public static boolean hasItems(JSONArray array){
+        return array.length() > 0;
     }
 }

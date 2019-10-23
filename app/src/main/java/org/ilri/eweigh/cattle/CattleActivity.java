@@ -2,6 +2,8 @@ package org.ilri.eweigh.cattle;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -13,9 +15,12 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,6 +32,7 @@ import com.marcinorlowski.fonty.Fonty;
 import org.ilri.eweigh.R;
 import org.ilri.eweigh.accounts.AccountUtils;
 import org.ilri.eweigh.accounts.models.User;
+import org.ilri.eweigh.database.viewmodel.BreedsViewModel;
 import org.ilri.eweigh.network.APIService;
 import org.ilri.eweigh.network.RequestParams;
 import org.ilri.eweigh.utils.URL;
@@ -83,13 +89,33 @@ public class CattleActivity extends AppCompatActivity implements AdapterView.OnI
     }
 
     private void showRegisterCattleModal(){
+        BreedsViewModel bvm = ViewModelProviders.of(this).get(BreedsViewModel.class);
+
         View view = LayoutInflater
                 .from(this)
                 .inflate(R.layout.fragment_add_cattle, null);
 
         final EditText inputTag = view.findViewById(R.id.input_tag);
-        final EditText inputBreed = view.findViewById(R.id.input_breed);
         final EditText inputHG = view.findViewById(R.id.input_hg);
+
+        final Spinner spinnerBreeds = view.findViewById(R.id.spinner_breeds);
+
+        // Populate breeds
+        bvm.getAll().observe(this, new Observer<List<Breed>>() {
+
+            @Override
+            public void onChanged(List<Breed> breeds) {
+
+                ArrayList<Breed> breedsList = new ArrayList<>();
+
+                breedsList.add(new Breed(0, "Select Breed"));
+                breedsList.addAll(breeds);
+
+                ArrayAdapter<Breed> adapter = new ArrayAdapter<>(CattleActivity.this,
+                        android.R.layout.simple_spinner_dropdown_item, breedsList);
+                spinnerBreeds.setAdapter(adapter);
+            }
+        });
 
         final ProgressDialog progressDialog =
                 Utils.getProgressDialog(this, "Submitting...", false);
@@ -97,85 +123,98 @@ public class CattleActivity extends AppCompatActivity implements AdapterView.OnI
         AlertDialog.Builder builder = new AlertDialog.Builder(this)
                 .setTitle("Register Cattle")
                 .setView(view)
-                .setCancelable(true)
-                .setPositiveButton("Submit", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(final DialogInterface dialog, int which) {
+                .setCancelable(true);
 
-                        String tag = inputTag.getText().toString();
-                        String breed = inputBreed.getText().toString();
-                        String hg = inputHG.getText().toString();
+        final AlertDialog dialog = builder.create();
+        dialog.show();
 
-                        if(TextUtils.isEmpty(tag)){
-                            inputTag.setError("Required");
-                        }
-                        else if(TextUtils.isEmpty(breed)){
-                            inputBreed.setError("Required");
-                        }
-                        else if(TextUtils.isEmpty(hg)){
-                            inputHG.setError("Required");
-                        }
-                        else{
-                            progressDialog.show();
+        Button btnAddCattle = view.findViewById(R.id.btn_add_cattle);
+        Button btnCancel = view.findViewById(R.id.btn_cancel);
 
-                            RequestParams params = new RequestParams();
-                            params.put(User.ID, String.valueOf(user.getUserId()));
-                            params.put(Cattle.TAG, tag);
-                            params.put(Cattle.BREED, breed);
-                            params.put(Cattle.INITIAL_HG, hg);
+        btnAddCattle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String tag = inputTag.getText().toString();
+                String hg = inputHG.getText().toString();
 
-                            apiService.post(
-                                    URL.RegisterCattle,
-                                    params,
-                                    new Response.Listener<String>() {
-                                        @Override
-                                        public void onResponse(String response) {
-                                            Log.d(TAG, "Response: " + response);
-                                            progressDialog.dismiss();
+                Breed b = (Breed) spinnerBreeds.getSelectedItem();
+                int breed = b.getId();
+
+                if(TextUtils.isEmpty(tag)){
+                    inputTag.setError("Required");
+                }
+                else if(breed == 0){
+                    ((TextView) spinnerBreeds.getSelectedView()).setError("Select breed");
+                }
+                else if(TextUtils.isEmpty(hg)){
+                    inputHG.setError("Required");
+                }
+                else{
+                    progressDialog.show();
+
+                    RequestParams params = new RequestParams();
+                    params.put(User.ID, String.valueOf(user.getUserId()));
+                    params.put(Cattle.TAG, tag);
+                    params.put(Cattle.BREED, String.valueOf(breed));
+                    params.put(Cattle.INITIAL_HG, hg);
+
+                    apiService.post(
+                            URL.RegisterCattle,
+                            params,
+                            new Response.Listener<String>() {
+                                @Override
+                                public void onResponse(String response) {
+                                    Log.d(TAG, "Response: " + response);
+                                    progressDialog.dismiss();
+
+                                    try {
+                                        JSONObject obj = new JSONObject(response);
+
+                                        if(obj.has(Cattle.CATTLE)){
                                             dialog.dismiss();
 
-                                            try {
-                                                JSONObject obj = new JSONObject(response);
+                                            inputTag.setText("");
+                                            spinnerBreeds.setSelection(0);
+                                            inputHG.setText("");
 
-                                                if(obj.has(Cattle.CATTLE)){
-                                                    inputTag.setText("");
-                                                    inputBreed.setText("");
-                                                    inputHG.setText("");
+                                            Cattle c = new Cattle(obj.getJSONObject(Cattle.CATTLE));
+                                            cattle.add(0, c);
 
-                                                    Cattle c = new Cattle(obj.getJSONObject(Cattle.CATTLE));
-                                                    cattle.add(0, c);
-
-                                                    adapter.notifyDataSetChanged();
-                                                }
-
-                                                if(obj.has("message")){
-                                                    Toast.makeText(
-                                                            CattleActivity.this,
-                                                            obj.getString("message"),
-                                                            Toast.LENGTH_SHORT).show();
-                                                }
-
-                                            } catch (JSONException e) {
-                                                e.printStackTrace();
-                                            }
+                                            adapter.notifyDataSetChanged();
                                         }
 
-                                    }, new Response.ErrorListener() {
-                                        @Override
-                                        public void onErrorResponse(VolleyError error) {
-                                            Log.d(TAG, "Error: " + error.getMessage());
-                                            progressDialog.dismiss();
-
-                                            Toast.makeText(CattleActivity.this,
-                                                    "Could not add cattle", Toast.LENGTH_LONG).show();
+                                        if(obj.has("message")){
+                                            Toast.makeText(
+                                                    CattleActivity.this,
+                                                    obj.getString("message"),
+                                                    Toast.LENGTH_SHORT).show();
                                         }
-                                    });
-                        }
-                    }
-                })
-                .setNeutralButton("Cancel", null);
 
-        builder.create().show();
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+
+                            }, new Response.ErrorListener() {
+                                @Override
+                                public void onErrorResponse(VolleyError error) {
+                                    Log.d(TAG, "Error: " + error.getMessage());
+                                    progressDialog.dismiss();
+
+                                    Toast.makeText(CattleActivity.this,
+                                            "Could not add cattle", Toast.LENGTH_LONG).show();
+                                }
+                            });
+                }
+            }
+        });
+
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
     }
 
     private void renderList(List<Cattle> cattle){

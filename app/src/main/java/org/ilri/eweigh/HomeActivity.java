@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModelProviders;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,6 +19,8 @@ import com.android.volley.VolleyError;
 
 import org.ilri.eweigh.accounts.AccountUtils;
 import org.ilri.eweigh.accounts.MyAccountActivity;
+import org.ilri.eweigh.cattle.Breed;
+import org.ilri.eweigh.database.viewmodel.BreedsViewModel;
 import org.ilri.eweigh.feeds.CalculateFeedActivity;
 import org.ilri.eweigh.feeds.Feed;
 import org.ilri.eweigh.database.viewmodel.FeedsViewModel;
@@ -29,6 +32,7 @@ import org.ilri.eweigh.utils.URL;
 import org.ilri.eweigh.utils.Utils;
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 public class HomeActivity extends AppCompatActivity implements View.OnClickListener {
     public static final String TAG = HomeActivity.class.getSimpleName();
@@ -53,24 +57,49 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         Button btnAbout = findViewById(R.id.btn_about);
         btnAbout.setOnClickListener(this);
 
-        fetchFeeds();
+        fetchBundle();
     }
 
-    private void fetchFeeds(){
+    private void fetchBundle(){
+        final BreedsViewModel bvm = ViewModelProviders.of(this).get(BreedsViewModel.class);
         final FeedsViewModel fvm = ViewModelProviders.of(this).get(FeedsViewModel.class);
 
         new APIService(this)
-                .get(URL.FeedsList, new Response.Listener<String>() {
+                .get(URL.Bundle, new Response.Listener<String>() {
+
                     @Override
                     public void onResponse(String response) {
-                        fvm.deleteAll();
+                        Log.d(TAG, response);
 
                         try {
-                            JSONArray arr = new JSONArray(response);
+                            JSONObject obj = new JSONObject(response);
 
-                            for (int i=0; i<arr.length(); i++) {
-                                Feed f = new Feed(arr.getJSONObject(i));
-                                fvm.insert(f);
+                            // Store breeds
+                            if(obj.has("breeds")){
+                                JSONArray breeds = obj.getJSONArray("breeds");
+
+                                if(Feed.hasItems(breeds)){
+                                    bvm.deleteAll();
+
+                                    for (int i=0; i<breeds.length(); i++) {
+                                        Breed b = new Breed(breeds.getJSONObject(i));
+                                        bvm.insert(b);
+                                    }
+                                }
+                            }
+
+                            // Store feeds
+                            if(obj.has("feeds")){
+                                JSONArray feeds = obj.getJSONArray("feeds");
+
+                                if(Breed.hasItems(feeds)){
+                                    fvm.deleteAll();
+
+                                    for (int i=0; i<feeds.length(); i++) {
+                                        Feed f = new Feed(feeds.getJSONObject(i));
+                                        fvm.insert(f);
+                                    }
+                                }
                             }
 
                         } catch (JSONException e) {

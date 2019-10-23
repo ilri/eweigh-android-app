@@ -14,6 +14,9 @@ public class URL {
     // Resource URL
     public static final String AvatarPhotoUrl = RESOURCE_URL + "avatars/";
 
+    // App Bundle
+    public static final String Bundle = BASE_API_URL + "bundle";
+
     // Auth
     public static final String Register = BASE_API_URL + "register";
     public static final String Login = BASE_API_URL + "login";

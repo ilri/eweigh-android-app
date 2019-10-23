@@ -1,8 +1,10 @@
 package org.ilri.eweigh.feeds;
 
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -147,8 +149,17 @@ public class Feed implements Serializable {
         this.ndf = ndf;
     }
 
+    /**
+     *
+     * Model functions
+     *
+     * */
     @Override
     public String toString() {
         return feedName;
+    }
+
+    public static boolean hasItems(JSONArray array){
+        return array.length() > 0;
     }
 }
