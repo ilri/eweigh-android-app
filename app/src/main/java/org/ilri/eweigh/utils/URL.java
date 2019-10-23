@@ -27,6 +27,7 @@ public class URL {
     public static final String GetLiveWeight = BASE_API_URL + "lw";
     public static final String Cattle = BASE_API_URL + "cattle";
     public static final String RegisterCattle = BASE_API_URL + "cattle/register";
+    public static final String DeleteCattle = BASE_API_URL + "cattle/delete";
 
     // Feeds
     public static final String FeedsList = BASE_API_URL + "feeds";

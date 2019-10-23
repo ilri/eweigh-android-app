@@ -7,22 +7,34 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.google.android.material.tabs.TabLayout;
 import com.marcinorlowski.fonty.Fonty;
 
 import org.ilri.eweigh.R;
+import org.ilri.eweigh.network.APIService;
+import org.ilri.eweigh.network.RequestParams;
 import org.ilri.eweigh.ui.SectionsPagerAdapter;
+import org.ilri.eweigh.utils.URL;
 import org.ilri.eweigh.utils.Utils;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class CattleViewActivity extends AppCompatActivity {
     public static final String TAG = CattleViewActivity.class.getSimpleName();
@@ -217,5 +229,74 @@ public class CattleViewActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.cattle_view, menu);
+
+        menu.findItem(R.id.action_delete).setOnMenuItemClickListener(
+                new MenuItem.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem menuItem) {
+                        AlertDialog alertDialog = Utils.getSimpleDialog(CattleViewActivity.this, "",
+                                "Delete cattle?");
+
+                        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Delete", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+
+                                RequestParams params = new RequestParams();
+                                params.put(Cattle.ID, String.valueOf(cattle.getId()));
+
+                                new APIService(CattleViewActivity.this).post(URL.DeleteCattle,
+                                        params, new Response.Listener<String>() {
+                                            @Override
+                                            public void onResponse(String response) {
+                                                Log.d(TAG, response);
+
+                                                try {
+                                                    JSONObject obj = new JSONObject(response);
+
+                                                    if(obj.has("success")){
+                                                        Toast.makeText(CattleViewActivity.this,
+                                                                " " + obj.getString("message"),
+                                                                Toast.LENGTH_SHORT).show();
+
+                                                        Intent returnIntent = new Intent();
+                                                        returnIntent.putExtra("deleted", true);
+                                                        setResult(Activity.RESULT_OK, returnIntent);
+                                                        finish();
+                                                    }
+
+                                                } catch (JSONException e) {
+                                                    e.printStackTrace();
+                                                }
+                                            }
+
+                                        }, new Response.ErrorListener() {
+                                            @Override
+                                            public void onErrorResponse(VolleyError error) {
+                                                Toast.makeText(CattleViewActivity.this,
+                                                        "Could not process request", Toast.LENGTH_SHORT).show();
+                                            }
+                                        });
+                            }
+                        });
+
+                        alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel",
+                                new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                // Fail gracefully
+                            }
+                        });
+                        alertDialog.show();
+
+                        return true;
+                    }
+                });
+
+        return true;
     }
 }

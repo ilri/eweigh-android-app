@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -46,6 +47,8 @@ import java.util.List;
 
 public class CattleActivity extends AppCompatActivity implements AdapterView.OnItemClickListener{
     public static final String TAG = CattleActivity.class.getSimpleName();
+
+    public static final int RC_CATTLE_LIST = 50;
 
     CattleAdapter adapter;
     ListView listView;
@@ -219,8 +222,11 @@ public class CattleActivity extends AppCompatActivity implements AdapterView.OnI
 
     private void renderList(List<Cattle> cattle){
         adapter = new CattleAdapter(this, cattle);
+
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(this);
+
+        adapter.notifyDataSetChanged();
     }
 
     private void getCattle(){
@@ -235,6 +241,8 @@ public class CattleActivity extends AppCompatActivity implements AdapterView.OnI
 
                     try {
                         JSONArray arr = new JSONArray(response);
+
+                        cattle = new ArrayList<>();
 
                         if(arr.length() > 0){
                             blankState.setVisibility(View.GONE);
@@ -284,6 +292,19 @@ public class CattleActivity extends AppCompatActivity implements AdapterView.OnI
         Intent intent = new Intent(this, CattleViewActivity.class);
         intent.putExtra(Cattle.CATTLE, cattle);
 
-        startActivity(intent);
+        startActivityForResult(intent, RC_CATTLE_LIST);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == RC_CATTLE_LIST) {
+
+            if (resultCode == Activity.RESULT_OK &&
+                    data.getBooleanExtra("deleted", false)) {
+                getCattle();
+            }
+        }
     }
 }

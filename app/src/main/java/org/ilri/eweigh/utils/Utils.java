@@ -97,7 +97,6 @@ public class Utils {
     public static AlertDialog getSimpleDialog(Context context, String message){
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setMessage(message);
-        builder.setNeutralButton("Close", null);
 
         return builder.create();
     }
