@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">e-weigh</string>
+    <string name="country">Nchi</string>
+    <string name="county">Kata</string>
+    <string name="create_one">Jisajilishe</string>
+    <string name="don_t_have_an_account">Hauna akaunti?</string>
+    <string name="email_address">Barua Pepe</string>
+    <string name="email_mobile_no">Nambari ya Simu</string>
+    <string name="full_name">Majina Kamili</string>
+    <string name="get_live_weight">Hesabu Uzito</string>
+    <string name="get_feed_ration">Hesabu Chakula</string>
+    <string name="heart_girth_cm">Kipimo cha Heart Girth (cm)</string>
+    <string name="id_number">Nambari ya Kitambulisho</string>
+    <string name="live_weight">Kipimo cha Live Weight</string>
+    <string name="live_weight_label">Kipimo cha Live Weight</string>
+    <string name="location_permission">Programu inahitaji upatikanaji wa eneo lako la sasa ili kuwasilisha vipimo. Tafadhali ruhusu kibali hiki kuendelea</string>
+    <string name="log_in">Ingia</string>
+    <string name="logout">Toka</string>
+    <string name="mobile_no">Nambari ya Simu</string>
+    <string name="my_profile">Akaunti</string>
+    <string name="no_cattle_added_yet">Mifugo hawajasajiliwa</string>
+    <string name="no_connection">Hakuna mtandao</string>
+    <string name="no_info_found">Hakuna taarifa Iliyopatikana</string>
+    <string name="no_submissions_yet">Hakuna vipimo vilivyoongezwa</string>
+    <string name="password">Nenosiri</string>
+    <string name="prompt_email">Barua Pepe</string>
+    <string name="prompt_password">Nenosiri</string>
+    <string name="register">Jisajili</string>
+    <string name="submit">Tuma</string>
+    <string name="my_cattle">Mifugo</string>
+    <string name="view_submissions">Vipimo</string>
+    <string name="zero">0</string>
+    <string name="action_sign_in_short">Ingia</string>
+    <string name="action_sign_in">Ingia</string>
+    <string name="about">Kuhusu</string>
+</resources>
