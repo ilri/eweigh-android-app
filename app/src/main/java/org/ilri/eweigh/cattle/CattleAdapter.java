@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.marcinorlowski.fonty.Fonty;
 
 import org.ilri.eweigh.R;
+import org.ilri.eweigh.cattle.models.Cattle;
 
 import java.util.List;
 

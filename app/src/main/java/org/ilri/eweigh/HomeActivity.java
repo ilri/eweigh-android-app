@@ -19,8 +19,10 @@ import com.android.volley.VolleyError;
 
 import org.ilri.eweigh.accounts.AccountUtils;
 import org.ilri.eweigh.accounts.MyAccountActivity;
-import org.ilri.eweigh.cattle.Breed;
+import org.ilri.eweigh.cattle.models.Breed;
+import org.ilri.eweigh.cattle.models.Dosage;
 import org.ilri.eweigh.database.viewmodel.BreedsViewModel;
+import org.ilri.eweigh.database.viewmodel.DosagesViewModel;
 import org.ilri.eweigh.feeds.CalculateFeedActivity;
 import org.ilri.eweigh.feeds.Feed;
 import org.ilri.eweigh.database.viewmodel.FeedsViewModel;
@@ -63,6 +65,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     private void fetchBundle(){
         final BreedsViewModel bvm = ViewModelProviders.of(this).get(BreedsViewModel.class);
         final FeedsViewModel fvm = ViewModelProviders.of(this).get(FeedsViewModel.class);
+        final DosagesViewModel dvm = ViewModelProviders.of(this).get(DosagesViewModel.class);
 
         new APIService(this)
                 .get(URL.Bundle, new Response.Listener<String>() {
@@ -98,6 +101,20 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                                     for (int i=0; i<feeds.length(); i++) {
                                         Feed f = new Feed(feeds.getJSONObject(i));
                                         fvm.insert(f);
+                                    }
+                                }
+                            }
+
+                            // Store dosages
+                            if(obj.has("dosages")){
+                                JSONArray dosages = obj.getJSONArray("dosages");
+
+                                if(Dosage.hasItems(dosages)){
+                                    dvm.deleteAll();
+
+                                    for (int i=0; i<dosages.length(); i++) {
+                                        Dosage d = new Dosage(dosages.getJSONObject(i));
+                                        dvm.insert(d);
                                     }
                                 }
                             }

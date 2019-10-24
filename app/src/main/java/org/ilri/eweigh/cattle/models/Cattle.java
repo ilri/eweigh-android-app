@@ -1,4 +1,4 @@
-package org.ilri.eweigh.cattle;
+package org.ilri.eweigh.cattle.models;
 
 import org.json.JSONException;
 import org.json.JSONObject;

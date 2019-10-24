@@ -20,4 +20,17 @@
         android:theme="@style/BlankState"
         android:visibility="gone"/>
 
+    <Spinner
+        android:id="@+id/spinner_diseases"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:spinnerMode="dialog"/>
+
+    <Spinner
+        android:id="@+id/spinner_agents"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:spinnerMode="dialog"/>
+
+
 </LinearLayout>

@@ -6,7 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
-import org.ilri.eweigh.cattle.Breed;
+import org.ilri.eweigh.cattle.models.Breed;
 import org.ilri.eweigh.database.AppDatabase;
 import org.ilri.eweigh.database.dao.BreedsDao;
 

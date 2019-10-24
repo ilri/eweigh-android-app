@@ -7,7 +7,7 @@ import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Update;
 
-import org.ilri.eweigh.cattle.Breed;
+import org.ilri.eweigh.cattle.models.Breed;
 
 import java.util.List;
 

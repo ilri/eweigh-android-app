@@ -7,7 +7,6 @@ import androidx.lifecycle.ViewModelProviders;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -33,6 +32,8 @@ import com.marcinorlowski.fonty.Fonty;
 import org.ilri.eweigh.R;
 import org.ilri.eweigh.accounts.AccountUtils;
 import org.ilri.eweigh.accounts.models.User;
+import org.ilri.eweigh.cattle.models.Breed;
+import org.ilri.eweigh.cattle.models.Cattle;
 import org.ilri.eweigh.database.viewmodel.BreedsViewModel;
 import org.ilri.eweigh.network.APIService;
 import org.ilri.eweigh.network.RequestParams;

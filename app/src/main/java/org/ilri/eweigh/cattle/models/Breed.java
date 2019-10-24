@@ -1,4 +1,4 @@
-package org.ilri.eweigh.cattle;
+package org.ilri.eweigh.cattle.models;
 
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
