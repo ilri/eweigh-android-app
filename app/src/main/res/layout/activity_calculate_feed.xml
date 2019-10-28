@@ -142,7 +142,8 @@
                         android:id="@+id/edit_txt_target_weight"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Target weight (kg)"
+                        android:drawableStart="@drawable/ic_weight_kilogram_grey600_24dp"
+                        android:hint="Target weight"
                         android:imeActionId="6"
                         android:imeActionLabel="Target weight (kg)"
                         android:imeOptions="actionUnspecified"
@@ -162,13 +163,15 @@
                         android:id="@+id/edit_txt_target_date"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:drawableStart="@drawable/ic_calendar_grey600_24dp"
                         android:hint="Target date"
                         android:imeActionId="6"
                         android:imeActionLabel="Target weight (kg)"
                         android:imeOptions="actionUnspecified"
                         android:inputType="date"
                         android:maxLines="1"
-                        android:singleLine="true" />
+                        android:singleLine="true"
+                        android:focusable="false"/>
 
                 </com.google.android.material.textfield.TextInputLayout>
 

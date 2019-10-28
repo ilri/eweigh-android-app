@@ -1,10 +1,15 @@
 package org.ilri.eweigh.cattle.models;
 
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.Serializable;
 
+@Entity(tableName = "cattle")
 public class Cattle implements Serializable {
 
     /**
@@ -17,7 +22,7 @@ public class Cattle implements Serializable {
     public static final String USER_ID = "userid";
     public static final String TAG = "tag";
     public static final String BREED = "breed";
-    public static final String INITIAL_HG = "initialhg";
+    public static final String LIVE_WEIGHT = "lw";
     public static final String CREATED_ON = "createdon";
 
     /**
@@ -25,8 +30,15 @@ public class Cattle implements Serializable {
      * Model vars
      *
      * */
-    private int id, userId, initialHg;
+
+    @PrimaryKey
+    private int id;
+
+    private int userId;
+    private double liveWeight;
     private String tag, breed, createdOn;
+
+    public Cattle(){}
 
     public Cattle(JSONObject obj){
 
@@ -35,7 +47,7 @@ public class Cattle implements Serializable {
             this.userId = obj.getInt(USER_ID);
             this.tag = obj.optString(TAG, "-");
             this.breed = obj.optString(BREED, "-");
-            this.initialHg = obj.optInt(INITIAL_HG, 0);
+            this.liveWeight = obj.optInt(LIVE_WEIGHT, 0);
             this.createdOn = obj.optString(CREATED_ON, "-");
 
         } catch (JSONException e) {
@@ -59,12 +71,12 @@ public class Cattle implements Serializable {
         this.userId = userId;
     }
 
-    public int getInitialHg() {
-        return initialHg;
+    public double getLiveWeight() {
+        return liveWeight;
     }
 
-    public void setInitialHg(int initialHg) {
-        this.initialHg = initialHg;
+    public void setLiveWeight(double liveWeight) {
+        this.liveWeight = liveWeight;
     }
 
     public String getTag() {
@@ -89,5 +101,20 @@ public class Cattle implements Serializable {
 
     public void setCreatedOn(String createdOn) {
         this.createdOn = createdOn;
+    }
+
+    /**
+     *
+     * Model functions
+     *
+     * */
+
+    @Override
+    public String toString() {
+        return tag;
+    }
+
+    public static boolean hasItems(JSONArray array){
+        return array.length() > 0;
     }
 }

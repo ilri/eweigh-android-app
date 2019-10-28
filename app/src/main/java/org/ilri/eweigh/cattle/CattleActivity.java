@@ -36,6 +36,7 @@ import org.ilri.eweigh.accounts.models.User;
 import org.ilri.eweigh.cattle.models.Breed;
 import org.ilri.eweigh.cattle.models.Cattle;
 import org.ilri.eweigh.database.viewmodel.BreedsViewModel;
+import org.ilri.eweigh.database.viewmodel.CattleViewModel;
 import org.ilri.eweigh.network.APIService;
 import org.ilri.eweigh.network.RequestParams;
 import org.ilri.eweigh.utils.URL;
@@ -62,6 +63,8 @@ public class CattleActivity extends AppCompatActivity implements AdapterView.OnI
     APIService apiService;
     User user;
 
+    CattleViewModel cvm;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,6 +77,8 @@ public class CattleActivity extends AppCompatActivity implements AdapterView.OnI
 
         apiService = new APIService(this);
         user = new AccountUtils(this).getUserDetails();
+
+        cvm = ViewModelProviders.of(this).get(CattleViewModel.class);
 
         progressBar = findViewById(R.id.progress_bar);
         blankState = findViewById(R.id.txt_blank_state);
@@ -88,9 +93,72 @@ public class CattleActivity extends AppCompatActivity implements AdapterView.OnI
             }
         });
 
+        cvm.getAll().observe(this, new Observer<List<Cattle>>() {
+            @Override
+            public void onChanged(List<Cattle> cattle) {
+                renderList(cattle);
+            }
+        });
+
         getCattle();
 
         Fonty.setFonts(this);
+    }
+
+    private void renderList(List<Cattle> cattle){
+        adapter = new CattleAdapter(this, cattle);
+
+        listView.setAdapter(adapter);
+        listView.setOnItemClickListener(this);
+
+        adapter.notifyDataSetChanged();
+    }
+
+    private void getCattle(){
+        RequestParams params = new RequestParams();
+        params.put(User.ID, String.valueOf(user.getUserId()));
+
+        apiService.post(URL.Cattle, params, new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    Log.d(TAG, "Response: " + response);
+                    progressBar.setVisibility(View.GONE);
+
+                    try {
+                        JSONArray arr = new JSONArray(response);
+
+                        cattle = new ArrayList<>();
+
+                        if(arr.length() > 0){
+                            blankState.setVisibility(View.GONE);
+
+                            cvm.deleteAll();
+
+                            for(int i=0; i<arr.length(); i++){
+                                Cattle c = new Cattle(arr.getJSONObject(i));
+                                cattle.add(c);
+
+                                // Store cattle locally
+                                cvm.insert(c);
+                            }
+                        }
+                        else{
+                            blankState.setVisibility(View.VISIBLE);
+                        }
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Log.d(TAG, "Error: " + error.getMessage());
+                    progressBar.setVisibility(View.GONE);
+                    blankState.setVisibility(View.VISIBLE);
+                }
+            });
     }
 
     private void showRegisterCattleModal(){
@@ -214,58 +282,6 @@ public class CattleActivity extends AppCompatActivity implements AdapterView.OnI
                 dialog.dismiss();
             }
         });
-    }
-
-    private void renderList(List<Cattle> cattle){
-        adapter = new CattleAdapter(this, cattle);
-
-        listView.setAdapter(adapter);
-        listView.setOnItemClickListener(this);
-
-        adapter.notifyDataSetChanged();
-    }
-
-    private void getCattle(){
-        RequestParams params = new RequestParams();
-        params.put(User.ID, String.valueOf(user.getUserId()));
-
-        apiService.post(URL.Cattle, params, new Response.Listener<String>() {
-                @Override
-                public void onResponse(String response) {
-                    Log.d(TAG, "Response: " + response);
-                    progressBar.setVisibility(View.GONE);
-
-                    try {
-                        JSONArray arr = new JSONArray(response);
-
-                        cattle = new ArrayList<>();
-
-                        if(arr.length() > 0){
-                            blankState.setVisibility(View.GONE);
-
-                            for(int i=0; i<arr.length(); i++){
-                                cattle.add(new Cattle(arr.getJSONObject(i)));
-                            }
-
-                            renderList(cattle);
-                        }
-                        else{
-                            blankState.setVisibility(View.VISIBLE);
-                        }
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    Log.d(TAG, "Error: " + error.getMessage());
-                    progressBar.setVisibility(View.GONE);
-                    blankState.setVisibility(View.VISIBLE);
-                }
-            });
     }
 
     @Override

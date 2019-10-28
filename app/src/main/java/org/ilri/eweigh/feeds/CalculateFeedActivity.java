@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
+import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -12,6 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
@@ -32,8 +34,11 @@ import org.ilri.eweigh.utils.Utils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 public class CalculateFeedActivity extends AppCompatActivity {
     public static final String TAG = CalculateFeedActivity.class.getSimpleName();
@@ -62,6 +67,37 @@ public class CalculateFeedActivity extends AppCompatActivity {
         editMilkProduction = findViewById(R.id.edit_txt_milk_production);
         editTargetWeight = findViewById(R.id.edit_txt_target_weight);
         editTargetDate = findViewById(R.id.edit_txt_target_date);
+
+        /*
+        *
+        * Set up DatePicker field
+        *
+        * */
+        final Calendar calendar = Calendar.getInstance();
+
+        final DatePickerDialog.OnDateSetListener datePickerDialog = new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker dialog, int year, int monthOfYear, int dayOfMonth) {
+                calendar.set(Calendar.YEAR, year);
+                calendar.set(Calendar.MONTH, monthOfYear);
+                calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+
+                dialog.setMinDate(System.currentTimeMillis() - 1000);
+
+                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.UK);
+
+                editTargetDate.setText(sdf.format(calendar.getTime()));
+            }
+        };
+
+        editTargetDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new DatePickerDialog(CalculateFeedActivity.this, datePickerDialog,
+                        calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH),
+                        calendar.get(Calendar.DAY_OF_MONTH)).show();
+            }
+        });
 
         /*
          *

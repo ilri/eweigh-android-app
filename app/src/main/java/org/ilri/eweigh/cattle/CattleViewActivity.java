@@ -35,9 +35,7 @@ import org.ilri.eweigh.R;
 import org.ilri.eweigh.cattle.models.Cattle;
 import org.ilri.eweigh.cattle.models.ChemicalAgent;
 import org.ilri.eweigh.cattle.models.Disease;
-import org.ilri.eweigh.cattle.models.Dosage;
 import org.ilri.eweigh.database.viewmodel.DosagesViewModel;
-import org.ilri.eweigh.feeds.CalculateFeedActivity;
 import org.ilri.eweigh.network.APIService;
 import org.ilri.eweigh.network.RequestParams;
 import org.ilri.eweigh.ui.SectionsPagerAdapter;
@@ -46,7 +44,6 @@ import org.ilri.eweigh.utils.Utils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class CattleViewActivity extends AppCompatActivity {
@@ -94,13 +91,29 @@ public class CattleViewActivity extends AppCompatActivity {
         DetailsFragment f1 = new DetailsFragment(this);
         mSectionsPagerAdapter.addFragment(f1, "Details");
 
-        DosagesFragment f2 = new DosagesFragment(this);
-        mSectionsPagerAdapter.addFragment(f2, "Treatment");
+        FeedsFragment f2 = new FeedsFragment(this);
+        mSectionsPagerAdapter.addFragment(f2, "Feeds");
 
-        MatingGuideFragment f3 = new MatingGuideFragment(this);
-        mSectionsPagerAdapter.addFragment(f3, "Mating Guide");
+        DosagesFragment f3 = new DosagesFragment(this);
+        mSectionsPagerAdapter.addFragment(f3, "Dosages");
+
+        MatingGuideFragment f4 = new MatingGuideFragment(this);
+        mSectionsPagerAdapter.addFragment(f4, "Mating Guide");
 
         mViewPager.setAdapter(mSectionsPagerAdapter);
+
+        int[] tabIcons = {
+                R.drawable.ic_information_outline_white_24dp,
+                R.drawable.ic_sprout_white_24dp,
+                R.drawable.ic_pill_white_24dp,
+                R.drawable.ic_gender_male_female_white_24dp
+        };
+
+        for(int i=0; i<tabLayout.getTabCount(); i++){
+            if(tabLayout.getTabAt(i) != null){
+                tabLayout.getTabAt(i).setIcon(tabIcons[i]);
+            }
+        }
     }
 
     /**
@@ -132,7 +145,7 @@ public class CattleViewActivity extends AppCompatActivity {
             progressBar = view.findViewById(R.id.progress_bar);
 
             blankState = view.findViewById(R.id.txt_blank_state);
-            blankState.setText("No reports added");
+            blankState.setText("No info available");
 
             fetchInfo();
 
@@ -148,7 +161,52 @@ public class CattleViewActivity extends AppCompatActivity {
 
     /**
      *
-     * DOSAGE
+     * FEEDS
+     *
+     * */
+    public static class FeedsFragment extends Fragment {
+
+        ProgressBar progressBar;
+        TextView blankState;
+
+        private Context context;
+
+        FeedsFragment(Context context) {
+            this.context = context;
+        }
+
+        @Override
+        public void onCreate(@Nullable Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+        }
+
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                                 Bundle savedInstanceState) {
+            View view = inflater.inflate(R.layout.fragment_feeds, container, false);
+
+            progressBar = view.findViewById(R.id.progress_bar);
+
+            blankState = view.findViewById(R.id.txt_blank_state);
+            blankState.setText("No feed info");
+            blankState.setVisibility(View.VISIBLE);
+
+            fetchInfo();
+
+            Fonty.setFonts(container);
+
+            return view;
+        }
+
+        private void fetchInfo(){
+
+        }
+    }
+
+
+    /**
+     *
+     * DOSAGES
      *
      * */
     public static class DosagesFragment extends Fragment {
@@ -176,7 +234,7 @@ public class CattleViewActivity extends AppCompatActivity {
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
-            View view = inflater.inflate(R.layout.fragment_dosage, container, false);
+            View view = inflater.inflate(R.layout.fragment_dosages, container, false);
 
             progressBar = view.findViewById(R.id.progress_bar);
 

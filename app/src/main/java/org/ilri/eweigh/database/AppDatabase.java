@@ -11,22 +11,26 @@ import androidx.room.RoomDatabase;
 import androidx.sqlite.db.SupportSQLiteOpenHelper;
 
 import org.ilri.eweigh.cattle.models.Breed;
+import org.ilri.eweigh.cattle.models.Cattle;
 import org.ilri.eweigh.cattle.models.Dosage;
 import org.ilri.eweigh.database.dao.BreedsDao;
+import org.ilri.eweigh.database.dao.CattleDao;
 import org.ilri.eweigh.database.dao.DosagesDao;
 import org.ilri.eweigh.database.dao.FeedsDao;
 import org.ilri.eweigh.feeds.Feed;
 
 @Database(entities = {
         Breed.class,
+        Cattle.class,
         Dosage.class,
         Feed.class
-}, version = 3, exportSchema = false)
+}, version = 4, exportSchema = false)
 
 public abstract class AppDatabase extends RoomDatabase {
     private static AppDatabase INSTANCE;
 
     public abstract BreedsDao breedsDao();
+    public abstract CattleDao cattleDao();
     public abstract DosagesDao dosagesDao();
     public abstract FeedsDao feedsDao();
 

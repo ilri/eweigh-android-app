@@ -23,7 +23,8 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            style="@style/FormInputStyle">
 
             <AutoCompleteTextView
                 android:id="@+id/edit_txt_email"
@@ -32,14 +33,14 @@
                 android:hint="@string/prompt_email"
                 android:inputType="textEmailAddress"
                 android:maxLines="1"
-                android:singleLine="true"
-                style="@style/FormInputStyle" />
+                android:singleLine="true" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            style="@style/FormInputStyle">
 
             <EditText
                 android:id="@+id/edit_txt_password"
@@ -51,8 +52,7 @@
                 android:imeOptions="actionUnspecified"
                 android:inputType="textPassword"
                 android:maxLines="1"
-                android:singleLine="true"
-                style="@style/FormInputStyle" />
+                android:singleLine="true" />
 
         </com.google.android.material.textfield.TextInputLayout>
 

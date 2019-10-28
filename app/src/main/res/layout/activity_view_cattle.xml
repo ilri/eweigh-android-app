@@ -30,7 +30,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:tabMode="fixed"
-            app:tabGravity="fill"/>
+            app:tabGravity="center"
+            app:tabInlineLabel="false"/>
 
     </com.google.android.material.appbar.AppBarLayout>
 

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    style="@style/TabTheme">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        style="@style/CardTheme">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="15dp"
+            android:text="Select the disease you wish to treat and the chemical agent used to treat it:"/>
+
+        <TextView
+            android:id="@+id/txt_blank_state"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:theme="@style/BlankState"
+            android:visibility="gone"/>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/FormInputStyle">
+
+            <EditText
+                android:id="@+id/edit_live_weight"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/live_weight"
+                android:imeActionLabel="@string/live_weight"
+                android:imeOptions="actionUnspecified"
+                android:inputType="numberDecimal"
+                android:maxLines="1"
+                android:enabled="false"
+                android:singleLine="true" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="10dp"
+            android:theme="@style/FormSpinnerStyle">
+
+            <Spinner
+                android:id="@+id/spinner_diseases"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:spinnerMode="dialog"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="10dp"
+            android:theme="@style/FormSpinnerStyle">
+
+            <Spinner
+                android:id="@+id/spinner_agents"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:spinnerMode="dialog"/>
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btn_get_dosage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Get Dosage"/>
+
+    </LinearLayout>
+
+</LinearLayout>
