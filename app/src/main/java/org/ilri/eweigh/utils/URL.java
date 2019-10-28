@@ -33,6 +33,9 @@ public class URL {
     public static final String FeedsList = BASE_API_URL + "feeds";
     public static final String GetFeedRation = BASE_API_URL + "feeds/ration";
 
+    // Dosages
+    public static final String GetDosage = BASE_API_URL + "dosage/calculate";
+
     // Reports
     public static final String Submissions = BASE_API_URL + "report/submissions";
 }

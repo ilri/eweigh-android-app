@@ -21,6 +21,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -94,7 +96,7 @@ public class CattleViewActivity extends AppCompatActivity {
         FeedsFragment f2 = new FeedsFragment(this);
         mSectionsPagerAdapter.addFragment(f2, "Feeds");
 
-        DosagesFragment f3 = new DosagesFragment(this);
+        DosagesFragment f3 = new DosagesFragment(this, cattle);
         mSectionsPagerAdapter.addFragment(f3, "Dosages");
 
         MatingGuideFragment f4 = new MatingGuideFragment(this);
@@ -216,12 +218,16 @@ public class CattleViewActivity extends AppCompatActivity {
         ProgressBar progressBar;
         TextView blankState;
 
+        EditText liveWeight;
         Spinner spinnerDiseases, spinnerAgents;
 
         DosagesViewModel dvm;
 
-        DosagesFragment(Context context) {
+        Cattle cattle;
+
+        DosagesFragment(Context context, Cattle cattle) {
             this.context = context;
+            this.cattle = cattle;
         }
 
         @Override
@@ -240,6 +246,9 @@ public class CattleViewActivity extends AppCompatActivity {
 
             blankState = view.findViewById(R.id.txt_blank_state);
             blankState.setText("No dosages added");
+
+            liveWeight = view.findViewById(R.id.edit_live_weight);
+            liveWeight.setText(String.valueOf(cattle.getLiveWeight()));
 
             // Init disease spinner
             ArrayAdapter<Disease> adapter = new ArrayAdapter<>(context,
@@ -267,7 +276,12 @@ public class CattleViewActivity extends AppCompatActivity {
 
             spinnerAgents = view.findViewById(R.id.spinner_agents);
 
-            fetchDosage();
+            view.findViewById(R.id.btn_get_dosage).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    fetchDosage();
+                }
+            });
 
             Fonty.setFonts(container);
 
@@ -275,7 +289,38 @@ public class CattleViewActivity extends AppCompatActivity {
         }
 
         private void fetchDosage(){
+            Disease disease = (Disease) spinnerDiseases.getSelectedItem();
+            ChemicalAgent agent = (ChemicalAgent) spinnerAgents.getSelectedItem();
 
+            if(disease.getId() == 0){
+                ((TextView) spinnerDiseases.getSelectedView()).setError("Select disease");
+            }
+            else if(agent.getId() == 0){
+                ((TextView) spinnerAgents.getSelectedView()).setError("Select chemical agent");
+            }
+            else{
+
+                RequestParams params = new RequestParams();
+
+                params.put(Disease.DISEASE, String.valueOf(disease.getId()));
+                params.put(ChemicalAgent.CHEMICAL_AGENT, String.valueOf(agent.getId()));
+                params.put(Cattle.LIVE_WEIGHT, String.valueOf(cattle.getLiveWeight()));
+
+                new APIService(context).post(URL.GetDosage, params, new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.d(TAG, response);
+
+
+                        // Update cattle object locally if live weight has been updated
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+
+                    }
+                });
+            }
         }
     }
 
