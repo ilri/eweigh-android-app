@@ -9,6 +9,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.InputFilter;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -100,7 +101,7 @@ public class CattleActivity extends AppCompatActivity implements AdapterView.OnI
                 .inflate(R.layout.fragment_add_cattle, null);
 
         final EditText inputTag = view.findViewById(R.id.input_tag);
-        final EditText inputHG = view.findViewById(R.id.input_hg);
+        inputTag.setFilters(new InputFilter[] {new InputFilter.AllCaps()});
 
         final Spinner spinnerBreeds = view.findViewById(R.id.spinner_breeds);
 
@@ -139,7 +140,6 @@ public class CattleActivity extends AppCompatActivity implements AdapterView.OnI
             @Override
             public void onClick(View view) {
                 String tag = inputTag.getText().toString();
-                String hg = inputHG.getText().toString();
 
                 Breed b = (Breed) spinnerBreeds.getSelectedItem();
                 int breed = b.getId();
@@ -150,9 +150,6 @@ public class CattleActivity extends AppCompatActivity implements AdapterView.OnI
                 else if(breed == 0){
                     ((TextView) spinnerBreeds.getSelectedView()).setError("Select breed");
                 }
-                else if(TextUtils.isEmpty(hg)){
-                    inputHG.setError("Required");
-                }
                 else{
                     progressDialog.show();
 
@@ -160,7 +157,6 @@ public class CattleActivity extends AppCompatActivity implements AdapterView.OnI
                     params.put(User.ID, String.valueOf(user.getUserId()));
                     params.put(Cattle.TAG, tag);
                     params.put(Cattle.BREED, String.valueOf(breed));
-                    params.put(Cattle.INITIAL_HG, hg);
 
                     apiService.post(
                             URL.RegisterCattle,
@@ -179,7 +175,6 @@ public class CattleActivity extends AppCompatActivity implements AdapterView.OnI
 
                                             inputTag.setText("");
                                             spinnerBreeds.setSelection(0);
-                                            inputHG.setText("");
 
                                             Cattle c = new Cattle(obj.getJSONObject(Cattle.CATTLE));
                                             cattle.add(0, c);

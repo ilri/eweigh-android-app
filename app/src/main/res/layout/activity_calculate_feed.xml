@@ -3,7 +3,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:padding="15dp">
 
     <ScrollView
         android:id="@+id/scrollView"
@@ -16,11 +17,12 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="12dp"
-            android:paddingBottom="50dp">
+            android:background="@color/white">
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:theme="@style/FormInputStyle">
 
                 <EditText
                     android:id="@+id/edit_txt_lw"
@@ -40,8 +42,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Select feed style:"
-                android:layout_marginBottom="2dp"
-                android:layout_marginTop="6dp"/>
+                android:layout_marginBottom="8dp"
+                android:layout_marginTop="15dp"/>
 
             <RadioGroup
                 android:layout_width="match_parent"
@@ -76,12 +78,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Select feed purpose:"
-                android:layout_marginBottom="2dp"
-                android:layout_marginTop="6dp"/>
+                android:layout_marginBottom="8dp"
+                android:layout_marginTop="20dp"/>
 
             <RadioGroup
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="15dp"
                 android:orientation="vertical"
                 android:padding="0dp">
 
@@ -101,8 +104,11 @@
             </RadioGroup>
 
             <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/layout_milk_options"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:theme="@style/FormInputStyle"
+                android:visibility="gone" >
 
                 <EditText
                     android:id="@+id/edit_txt_milk_production"
@@ -114,54 +120,65 @@
                     android:imeOptions="actionUnspecified"
                     android:inputType="number"
                     android:maxLines="1"
-                    android:singleLine="true"
-                    android:visibility="gone" />
+                    android:singleLine="true"/>
 
             </com.google.android.material.textfield.TextInputLayout>
 
-            <com.google.android.material.textfield.TextInputLayout
+            <LinearLayout
+                android:id="@+id/layout_weight_options"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:visibility="gone">
 
-                <EditText
-                    android:id="@+id/edit_txt_target_weight"
-                    android:layout_width="match_parent"
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:hint="Target weight (kg)"
-                    android:imeActionId="6"
-                    android:imeActionLabel="Target weight (kg)"
-                    android:imeOptions="actionUnspecified"
-                    android:inputType="number"
-                    android:maxLines="1"
-                    android:singleLine="true"
-                    android:visibility="gone" />
+                    android:layout_weight="1"
+                    android:layout_marginEnd="15dp"
+                    android:theme="@style/FormInputStyle">
 
-            </com.google.android.material.textfield.TextInputLayout>
+                    <EditText
+                        android:id="@+id/edit_txt_target_weight"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Target weight (kg)"
+                        android:imeActionId="6"
+                        android:imeActionLabel="Target weight (kg)"
+                        android:imeOptions="actionUnspecified"
+                        android:inputType="number"
+                        android:maxLines="1"
+                        android:singleLine="true" />
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                </com.google.android.material.textfield.TextInputLayout>
 
-                <EditText
-                    android:id="@+id/edit_txt_target_date"
-                    android:layout_width="match_parent"
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:hint="Target date"
-                    android:imeActionId="6"
-                    android:imeActionLabel="Target weight (kg)"
-                    android:imeOptions="actionUnspecified"
-                    android:inputType="date"
-                    android:maxLines="1"
-                    android:singleLine="true"
-                    android:visibility="gone" />
+                    android:layout_weight="1"
+                    android:theme="@style/FormInputStyle">
 
-            </com.google.android.material.textfield.TextInputLayout>
+                    <EditText
+                        android:id="@+id/edit_txt_target_date"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Target date"
+                        android:imeActionId="6"
+                        android:imeActionLabel="Target weight (kg)"
+                        android:imeOptions="actionUnspecified"
+                        android:inputType="date"
+                        android:maxLines="1"
+                        android:singleLine="true" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+            </LinearLayout>
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Select feeds:"
-                android:layout_marginTop="6dp"/>
+                android:layout_marginTop="0dp"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -172,7 +189,9 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:orientation="vertical">
+                    android:layout_marginEnd="15dp"
+                    android:orientation="vertical"
+                    android:theme="@style/FormSpinnerStyle">
 
                     <Spinner
                         android:id="@+id/spinner_forage"
@@ -187,7 +206,8 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:theme="@style/FormSpinnerStyle">
 
                     <Spinner
                         android:id="@+id/spinner_concentrate"

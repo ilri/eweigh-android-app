@@ -3,46 +3,38 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="20dp"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:padding="20dp">
 
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:theme="@style/FormInputStyle">
 
         <EditText
             android:id="@+id/input_tag"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
+            android:inputType="textCapCharacters"
+            android:textAllCaps="true"
             android:hint="Cattle tag no."/>
+
     </com.google.android.material.textfield.TextInputLayout>
 
-    <Spinner
-        android:id="@+id/spinner_breeds"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:spinnerMode="dialog"
-        android:padding="0dp"/>
+        android:orientation="vertical"
+        android:layout_marginBottom="20dp"
+        android:theme="@style/FormSpinnerStyle">
 
-    <EditText
-        android:id="@+id/edit_breeds"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"/>
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <EditText
-            android:id="@+id/input_hg"
+        <Spinner
+            android:id="@+id/spinner_breeds"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:hint="Initial heart girth (cm)"
-            android:inputType="number" />
-    </com.google.android.material.textfield.TextInputLayout>
+            android:spinnerMode="dialog"/>
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -63,6 +55,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_marginStart="10dp"
+            android:backgroundTint="@color/darkGray"
             android:text="Cancel" />
 
     </LinearLayout>

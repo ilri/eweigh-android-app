@@ -26,6 +26,7 @@ public class DosagesViewModel extends AndroidViewModel {
 
     public List<Disease> getDiseases(){
         List<Disease> diseases = new ArrayList<>();
+        diseases.add(new Disease(0, "Select disease"));
 
         for(Dosage d : dosagesDao.getDiseases()){
             diseases.add(new Disease(d.getDiseaseId(), d.getDisease()));
@@ -36,6 +37,7 @@ public class DosagesViewModel extends AndroidViewModel {
 
     public List<ChemicalAgent> getChemicalAgents(int diseaseId){
         List<ChemicalAgent> agents = new ArrayList<>();
+        agents.add(new ChemicalAgent(0, "Select chemical agent"));
 
         for(Dosage d : dosagesDao.getChemicalAgents(diseaseId)){
             agents.add(new ChemicalAgent(d.getChemicalAgentId(), d.getChemicalAgent()));

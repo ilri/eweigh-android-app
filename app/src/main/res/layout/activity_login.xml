@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="10dp"
     android:orientation="vertical"
-    tools:context=".accounts.LoginActivity">
+    style="@style/PageStyle">
 
     <LinearLayout
         android:id="@+id/email_login_form"
@@ -33,7 +32,8 @@
                 android:hint="@string/prompt_email"
                 android:inputType="textEmailAddress"
                 android:maxLines="1"
-                android:singleLine="true" />
+                android:singleLine="true"
+                style="@style/FormInputStyle" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -51,7 +51,8 @@
                 android:imeOptions="actionUnspecified"
                 android:inputType="textPassword"
                 android:maxLines="1"
-                android:singleLine="true" />
+                android:singleLine="true"
+                style="@style/FormInputStyle" />
 
         </com.google.android.material.textfield.TextInputLayout>
 

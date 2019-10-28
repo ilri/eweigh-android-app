@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -229,15 +230,16 @@ public class CalculateFeedActivity extends AppCompatActivity {
     }
 
     public void onFeedForRadioChanged(View v){
+        LinearLayout layoutWeight = findViewById(R.id.layout_weight_options);
+        LinearLayout layoutMilk = findViewById(R.id.layout_milk_options);
 
         switch (v.getId()) {
 
             case R.id.radio_milk_production:
                 feedFor = Feed.FEED_FOR_MILK;
 
-                editMilkProduction.setVisibility(View.VISIBLE);
-                editTargetWeight.setVisibility(View.GONE);
-                editTargetDate.setVisibility(View.GONE);
+                layoutMilk.setVisibility(View.VISIBLE);
+                layoutWeight.setVisibility(View.GONE);
 
                 editTargetWeight.setText("");
                 editTargetDate.setText("");
@@ -247,9 +249,8 @@ public class CalculateFeedActivity extends AppCompatActivity {
             case R.id.radio_weight_gain:
                 feedFor = Feed.FEED_FOR_WEIGHT;
 
-                editTargetWeight.setVisibility(View.VISIBLE);
-                editTargetDate.setVisibility(View.VISIBLE);
-                editMilkProduction.setVisibility(View.GONE);
+                layoutWeight.setVisibility(View.VISIBLE);
+                layoutMilk.setVisibility(View.GONE);
 
                 editMilkProduction.setText("");
 

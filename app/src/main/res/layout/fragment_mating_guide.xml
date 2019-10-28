@@ -2,22 +2,34 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:theme="@style/PageStyle">
 
-    <ProgressBar
-        android:id="@+id/progress_bar"
-        style="?android:attr/progressBarStyleHorizontal"
-        android:theme="@style/ProgressBarTheme"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:indeterminate="true"
-        android:visibility="gone"/>
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        style="@style/CardTheme">
 
-    <TextView
-        android:id="@+id/txt_blank_state"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:theme="@style/BlankState"
-        android:visibility="gone"/>
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:theme="@style/ProgressBarTheme"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:indeterminate="true"
+            android:visibility="gone"/>
+
+        <TextView
+            android:id="@+id/txt_blank_state"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:theme="@style/BlankState"
+            android:visibility="gone"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
 
 </LinearLayout>
