@@ -217,7 +217,7 @@ public class CattleViewActivity extends AppCompatActivity {
 
         private Context context;
 
-        EditText liveWeight;
+        EditText editLiveWeight;
         Spinner spinnerDiseases, spinnerAgents;
         TextView txtResponse;
 
@@ -244,8 +244,8 @@ public class CattleViewActivity extends AppCompatActivity {
 
             txtResponse = view.findViewById(R.id.txt_response);
 
-            liveWeight = view.findViewById(R.id.edit_live_weight);
-            liveWeight.setText(String.valueOf(cattle.getLiveWeight()));
+            editLiveWeight = view.findViewById(R.id.edit_live_weight);
+            editLiveWeight.setText(Utils.formatNumber(cattle.getLiveWeight()));
 
             // Init disease spinner
             ArrayAdapter<Disease> adapter = new ArrayAdapter<>(context,
@@ -289,10 +289,19 @@ public class CattleViewActivity extends AppCompatActivity {
         }
 
         private void fetchDosage(){
+            AlertDialog alertDialog = Utils.getStandardDialog(context, "");
+
             Disease disease = (Disease) spinnerDiseases.getSelectedItem();
             ChemicalAgent agent = (ChemicalAgent) spinnerAgents.getSelectedItem();
 
-            if(disease.getId() == 0){
+            if(Double.parseDouble(editLiveWeight.getText().toString()) == 0){
+                String s = "Get cattle's live weight first";
+                editLiveWeight.setError(s);
+
+                alertDialog.setMessage(s);
+                alertDialog.show();
+            }
+            else if(disease.getId() == 0){
                 ((TextView) spinnerDiseases.getSelectedView()).setError("Select disease");
             }
             else if(agent.getId() == 0){

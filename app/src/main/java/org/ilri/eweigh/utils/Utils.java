@@ -110,6 +110,14 @@ public class Utils {
         return builder.create();
     }
 
+    public static AlertDialog getStandardDialog(Context context, String message){
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setMessage(message);
+        builder.setNeutralButton("Close", null);
+
+        return builder.create();
+    }
+
     public static AlertDialog getCustomDialog(Context context, View view){
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setView(view);
