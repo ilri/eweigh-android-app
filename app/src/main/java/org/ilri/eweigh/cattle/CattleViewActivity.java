@@ -9,9 +9,11 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.viewpager.widget.ViewPager;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -21,7 +23,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
@@ -37,6 +38,7 @@ import org.ilri.eweigh.R;
 import org.ilri.eweigh.cattle.models.Cattle;
 import org.ilri.eweigh.cattle.models.ChemicalAgent;
 import org.ilri.eweigh.cattle.models.Disease;
+import org.ilri.eweigh.cattle.models.Dosage;
 import org.ilri.eweigh.database.viewmodel.DosagesViewModel;
 import org.ilri.eweigh.network.APIService;
 import org.ilri.eweigh.network.RequestParams;
@@ -215,11 +217,9 @@ public class CattleViewActivity extends AppCompatActivity {
 
         private Context context;
 
-        ProgressBar progressBar;
-        TextView blankState;
-
         EditText liveWeight;
         Spinner spinnerDiseases, spinnerAgents;
+        TextView txtResponse;
 
         DosagesViewModel dvm;
 
@@ -242,10 +242,7 @@ public class CattleViewActivity extends AppCompatActivity {
                                  Bundle savedInstanceState) {
             View view = inflater.inflate(R.layout.fragment_dosages, container, false);
 
-            progressBar = view.findViewById(R.id.progress_bar);
-
-            blankState = view.findViewById(R.id.txt_blank_state);
-            blankState.setText("No dosages added");
+            txtResponse = view.findViewById(R.id.txt_response);
 
             liveWeight = view.findViewById(R.id.edit_live_weight);
             liveWeight.setText(String.valueOf(cattle.getLiveWeight()));
@@ -266,15 +263,18 @@ public class CattleViewActivity extends AppCompatActivity {
                     ArrayAdapter<ChemicalAgent> adapter = new ArrayAdapter<>(context,
                             android.R.layout.simple_spinner_dropdown_item, agents);
                     spinnerAgents.setAdapter(adapter);
+
+                    spinnerAgents.setEnabled(true);
                 }
 
                 @Override
                 public void onNothingSelected(AdapterView<?> adapterView) {
-
+                    spinnerAgents.setEnabled(false);
                 }
             });
 
             spinnerAgents = view.findViewById(R.id.spinner_agents);
+            spinnerAgents.setEnabled(false);
 
             view.findViewById(R.id.btn_get_dosage).setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -299,25 +299,62 @@ public class CattleViewActivity extends AppCompatActivity {
                 ((TextView) spinnerAgents.getSelectedView()).setError("Select chemical agent");
             }
             else{
+                final ProgressDialog progressDialog =
+                        Utils.getProgressDialog(context, "Fetching dosage", true);
+
+                progressDialog.show();
+                txtResponse.setVisibility(View.GONE);
 
                 RequestParams params = new RequestParams();
 
-                params.put(Disease.DISEASE, String.valueOf(disease.getId()));
-                params.put(ChemicalAgent.CHEMICAL_AGENT, String.valueOf(agent.getId()));
+                params.put(Dosage.DISEASE, String.valueOf(disease.getId()));
+                params.put(Dosage.CHEMICAL_AGENT, String.valueOf(agent.getId()));
                 params.put(Cattle.LIVE_WEIGHT, String.valueOf(cattle.getLiveWeight()));
 
                 new APIService(context).post(URL.GetDosage, params, new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
                         Log.d(TAG, response);
+                        progressDialog.dismiss();
 
+                        try {
+                            JSONObject obj = new JSONObject(response);
 
-                        // Update cattle object locally if live weight has been updated
+                            if(obj.has(Dosage.DOSAGE)){
+                                String dose = "" +
+                                        "Disease: " + obj.getString(Dosage.DISEASE) + "\n" +
+                                        "Agent: " + obj.getString(Dosage.CHEMICAL_AGENT) + "\n" +
+                                        "Dosage: " + obj.getString(Dosage.DOSAGE) + "ml\n" +
+                                        "Application Mode: " + obj.getString(Dosage.APPLICATION_MODE);
+
+                                txtResponse.setText(dose);
+                                txtResponse.setTextColor(Color.BLUE);
+                                txtResponse.setVisibility(View.VISIBLE);
+
+                                spinnerAgents.setSelection(0);
+                                spinnerDiseases.setSelection(0);
+                            }
+                            else{
+                                txtResponse.setVisibility(View.GONE);
+                            }
+
+                            if(obj.has("message")){
+                                Toast.makeText(context, obj.getString("message"),
+                                        Toast.LENGTH_SHORT).show();
+                            }
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
+                        progressDialog.dismiss();
+                        txtResponse.setVisibility(View.GONE);
 
+                        Toast.makeText(context, "Error fetching dosage",
+                                Toast.LENGTH_SHORT).show();
                     }
                 });
             }
