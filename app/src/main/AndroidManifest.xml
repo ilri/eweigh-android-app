@@ -30,7 +30,7 @@
         <activity android:name=".accounts.MyAccountActivity" />
         <activity android:name=".HomeActivity" />
         <activity android:name=".AboutActivity" />
-        <activity android:name=".hg_lw.ConvertActivity" />
+        <activity android:name=".hg_lw.LiveWeightActivity" />
         <activity android:name=".hg_lw.SubmissionsActivity" />
 
         <activity android:name=".cattle.CattleActivity" />
@@ -38,7 +38,7 @@
             android:name=".cattle.CattleViewActivity"
             android:theme="@style/AppTheme.NoActionBar"/>
 
-        <activity android:name=".feeds.CalculateFeedActivity" />
+        <activity android:name=".feeds.FeedActivity" />
     </application>
 
 </manifest>

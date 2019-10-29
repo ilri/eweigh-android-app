@@ -40,8 +40,8 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
-public class CalculateFeedActivity extends AppCompatActivity {
-    public static final String TAG = CalculateFeedActivity.class.getSimpleName();
+public class FeedActivity extends AppCompatActivity {
+    public static final String TAG = FeedActivity.class.getSimpleName();
 
     FeedsViewModel fvm;
 
@@ -59,6 +59,8 @@ public class CalculateFeedActivity extends AppCompatActivity {
         if(getSupportActionBar() != null){
             getSupportActionBar().setTitle(getString(R.string.get_feed_ration));
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+            getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close_white_24dp);
         }
 
         fvm = ViewModelProviders.of(this).get(FeedsViewModel.class);
@@ -93,7 +95,7 @@ public class CalculateFeedActivity extends AppCompatActivity {
         editTargetDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new DatePickerDialog(CalculateFeedActivity.this, datePickerDialog,
+                new DatePickerDialog(FeedActivity.this, datePickerDialog,
                         calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH),
                         calendar.get(Calendar.DAY_OF_MONTH)).show();
             }
@@ -127,11 +129,11 @@ public class CalculateFeedActivity extends AppCompatActivity {
                     }
                 }
 
-                ArrayAdapter<Feed> adapter = new ArrayAdapter<>(CalculateFeedActivity.this,
+                ArrayAdapter<Feed> adapter = new ArrayAdapter<>(FeedActivity.this,
                         android.R.layout.simple_spinner_dropdown_item, forageFeeds);
                 spinnerForage.setAdapter(adapter);
 
-                ArrayAdapter<Feed> adapter2 = new ArrayAdapter<>(CalculateFeedActivity.this,
+                ArrayAdapter<Feed> adapter2 = new ArrayAdapter<>(FeedActivity.this,
                         android.R.layout.simple_spinner_dropdown_item, concentrateFeeds);
                 spinnerConcentrate.setAdapter(adapter2);
             }
@@ -154,7 +156,7 @@ public class CalculateFeedActivity extends AppCompatActivity {
                     editLiveWeight.setError("Enter live weight");
                 }
                 else if(feedFor.isEmpty()){
-                    Toast.makeText(CalculateFeedActivity.this,
+                    Toast.makeText(FeedActivity.this,
                             "Select purpose for feed", Toast.LENGTH_SHORT).show();
                 }
                 else if(feedFor.equals(Feed.FEED_FOR_MILK) && milkProduction.isEmpty()){
@@ -171,11 +173,11 @@ public class CalculateFeedActivity extends AppCompatActivity {
                     editTargetWeight.setError("Target weight should be greater than live weight");
                 }
                 else if(forage.getId() == 0){
-                    Toast.makeText(CalculateFeedActivity.this,
+                    Toast.makeText(FeedActivity.this,
                             "Select Forage", Toast.LENGTH_SHORT).show();
                 }
                 else if(concentrate.getId() == 0){
-                    Toast.makeText(CalculateFeedActivity.this,
+                    Toast.makeText(FeedActivity.this,
                             "Select Concentrate", Toast.LENGTH_SHORT).show();
                 }
                 else{

@@ -23,11 +23,11 @@ import org.ilri.eweigh.cattle.models.Breed;
 import org.ilri.eweigh.cattle.models.Dosage;
 import org.ilri.eweigh.database.viewmodel.BreedsViewModel;
 import org.ilri.eweigh.database.viewmodel.DosagesViewModel;
-import org.ilri.eweigh.feeds.CalculateFeedActivity;
+import org.ilri.eweigh.feeds.FeedActivity;
 import org.ilri.eweigh.feeds.Feed;
 import org.ilri.eweigh.database.viewmodel.FeedsViewModel;
 import org.ilri.eweigh.cattle.CattleActivity;
-import org.ilri.eweigh.hg_lw.ConvertActivity;
+import org.ilri.eweigh.hg_lw.LiveWeightActivity;
 import org.ilri.eweigh.hg_lw.SubmissionsActivity;
 import org.ilri.eweigh.network.APIService;
 import org.ilri.eweigh.utils.URL;
@@ -139,11 +139,11 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         switch(v.getId()){
 
             case R.id.btn_get_lw:
-                startActivity(new Intent(this, ConvertActivity.class));
+                startActivity(new Intent(this, LiveWeightActivity.class));
                 break;
 
             case R.id.btn_get_feed_ration:
-                startActivity(new Intent(this, CalculateFeedActivity.class));
+                startActivity(new Intent(this, FeedActivity.class));
                 break;
 
             case R.id.btn_view_submissions:

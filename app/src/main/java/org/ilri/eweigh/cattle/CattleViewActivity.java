@@ -39,7 +39,9 @@ import org.ilri.eweigh.cattle.models.Cattle;
 import org.ilri.eweigh.cattle.models.ChemicalAgent;
 import org.ilri.eweigh.cattle.models.Disease;
 import org.ilri.eweigh.cattle.models.Dosage;
+import org.ilri.eweigh.database.viewmodel.CattleViewModel;
 import org.ilri.eweigh.database.viewmodel.DosagesViewModel;
+import org.ilri.eweigh.hg_lw.LiveWeightActivity;
 import org.ilri.eweigh.network.APIService;
 import org.ilri.eweigh.network.RequestParams;
 import org.ilri.eweigh.ui.SectionsPagerAdapter;
@@ -47,11 +49,15 @@ import org.ilri.eweigh.utils.URL;
 import org.ilri.eweigh.utils.Utils;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.util.List;
 
 public class CattleViewActivity extends AppCompatActivity {
     public static final String TAG = CattleViewActivity.class.getSimpleName();
+
+    public static final int RC_LIVE_WEIGHT = 100;
+    public static final int RC_FOOD_RATION = 200;
 
     SectionsPagerAdapter mSectionsPagerAdapter;
     ViewPager mViewPager;
@@ -92,16 +98,16 @@ public class CattleViewActivity extends AppCompatActivity {
         tabLayout.setupWithViewPager(mViewPager);
         tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
 
-        DetailsFragment f1 = new DetailsFragment(this);
+        DetailsFragment f1 = new DetailsFragment(this, cattle);
         mSectionsPagerAdapter.addFragment(f1, "Details");
 
-        FeedsFragment f2 = new FeedsFragment(this);
+        FeedsFragment f2 = new FeedsFragment(this, cattle);
         mSectionsPagerAdapter.addFragment(f2, "Feeds");
 
         DosagesFragment f3 = new DosagesFragment(this, cattle);
         mSectionsPagerAdapter.addFragment(f3, "Dosages");
 
-        MatingGuideFragment f4 = new MatingGuideFragment(this);
+        MatingGuideFragment f4 = new MatingGuideFragment(this, cattle);
         mSectionsPagerAdapter.addFragment(f4, "Mating Guide");
 
         mViewPager.setAdapter(mSectionsPagerAdapter);
@@ -126,19 +132,24 @@ public class CattleViewActivity extends AppCompatActivity {
      *
      * */
     public static class DetailsFragment extends Fragment {
-
-        ProgressBar progressBar;
-        TextView blankState;
-
         private Context context;
 
-        DetailsFragment(Context context) {
+        TextView txtLiveWeight;
+
+        private Cattle cattle;
+
+        CattleViewModel cvm;
+
+        DetailsFragment(Context context, Cattle cattle) {
             this.context = context;
+            this.cattle = cattle;
         }
 
         @Override
         public void onCreate(@Nullable Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
+
+            cvm = ViewModelProviders.of(this).get(CattleViewModel.class);
         }
 
         @Override
@@ -146,20 +157,70 @@ public class CattleViewActivity extends AppCompatActivity {
                                  Bundle savedInstanceState) {
             View view = inflater.inflate(R.layout.fragment_cattle_details, container, false);
 
-            progressBar = view.findViewById(R.id.progress_bar);
+            TextView txtTag = view.findViewById(R.id.txt_tag);
+            TextView txtBreed = view.findViewById(R.id.txt_breed);
+            TextView txtDateAdded = view.findViewById(R.id.txt_date_added);
+            txtLiveWeight = view.findViewById(R.id.txt_live_weight);
 
-            blankState = view.findViewById(R.id.txt_blank_state);
-            blankState.setText("No info available");
+            txtTag.setText(String.format("%s: %s", context.getString(R.string.tag), cattle.getTag()));
+            txtBreed.setText(String.format("%s: %s", context.getString(R.string.breed), cattle.getBreed()));
+            txtDateAdded.setText(String.format("%s: %s", context.getString(R.string.added_on),
+                    Utils.formatDate(cattle.getCreatedOn())));
 
-            fetchInfo();
+            txtLiveWeight.setText(Utils.formatNumber(cattle.getLiveWeight()));
+
+            view.findViewById(R.id.btn_get_lw).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                    /*
+                     * Send a request to the LiveWeightActivity class to calculate the live weight:
+                     *
+                     * 1. Pass cattle object
+                     *
+                     * This returns the final value to the onActivityResult function and we can
+                     * update the UI and database values
+                     *
+                     * */
+                    Intent intent = new Intent(context, LiveWeightActivity.class);
+                    intent.putExtra(Cattle.CATTLE, cattle);
+
+                    startActivityForResult(intent, RC_LIVE_WEIGHT);
+                }
+            });
 
             Fonty.setFonts(container);
 
             return view;
         }
 
-        private void fetchInfo(){
+        @Override
+        public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+            super.onActivityResult(requestCode, resultCode, data);
 
+            if(requestCode == RC_LIVE_WEIGHT){
+
+                if(resultCode == Activity.RESULT_OK){
+                    double liveWeight = data.getDoubleExtra(Cattle.LIVE_WEIGHT, 0);
+
+                    if(liveWeight > 0){
+                        Toast.makeText(context, "LW: " + liveWeight, Toast.LENGTH_SHORT).show();
+
+                        txtLiveWeight.setText(String.valueOf(liveWeight));
+
+                        // Update cattle object in database
+                        cattle.setLiveWeight(liveWeight);
+
+                        cvm.update(cattle);
+                    }
+                    else{
+                        Toast.makeText(context, "Could not fetch live weight", Toast.LENGTH_SHORT).show();
+                    }
+                }
+                else{
+                    Toast.makeText(context, "Request cancelled", Toast.LENGTH_SHORT).show();
+                }
+            }
         }
     }
 
@@ -175,8 +236,11 @@ public class CattleViewActivity extends AppCompatActivity {
 
         private Context context;
 
-        FeedsFragment(Context context) {
+        private Cattle cattle;
+
+        FeedsFragment(Context context, Cattle cattle) {
             this.context = context;
+            this.cattle = cattle;
         }
 
         @Override
@@ -206,7 +270,6 @@ public class CattleViewActivity extends AppCompatActivity {
 
         }
     }
-
 
     /**
      *
@@ -382,8 +445,11 @@ public class CattleViewActivity extends AppCompatActivity {
 
         private Context context;
 
-        MatingGuideFragment(Context context) {
+        private Cattle cattle;
+
+        MatingGuideFragment(Context context, Cattle cattle) {
             this.context = context;
+            this.cattle = cattle;
         }
 
         @Override

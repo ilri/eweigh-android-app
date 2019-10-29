@@ -69,6 +69,14 @@
         <item name="android:elevation" tools:targetApi="lollipop">1dp</item>
     </style>
 
+    <style name="HorizontalLineTheme">
+        <item name="android:background">@color/lightGray</item>
+        <item name="android:layout_height">1dp</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_marginTop">@dimen/page_padding</item>
+        <item name="android:layout_marginBottom">@dimen/page_padding</item>
+    </style>
+
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>

@@ -1,6 +1,7 @@
 package org.ilri.eweigh.hg_lw;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -30,6 +31,7 @@ import com.marcinorlowski.fonty.Fonty;
 import org.ilri.eweigh.R;
 import org.ilri.eweigh.accounts.AccountUtils;
 import org.ilri.eweigh.accounts.models.User;
+import org.ilri.eweigh.cattle.models.Cattle;
 import org.ilri.eweigh.hg_lw.models.Submission;
 import org.ilri.eweigh.network.APIService;
 import org.ilri.eweigh.network.RequestParams;
@@ -41,8 +43,8 @@ import org.json.JSONObject;
 
 import locationprovider.davidserrano.com.LocationProvider;
 
-public class ConvertActivity extends AppCompatActivity {
-    private static final String TAG = ConvertActivity.class.getSimpleName();
+public class LiveWeightActivity extends AppCompatActivity {
+    private static final String TAG = LiveWeightActivity.class.getSimpleName();
 
     EditText inputHG;
     TextView txtLW, txtMeta;
@@ -50,14 +52,29 @@ public class ConvertActivity extends AppCompatActivity {
     double latitude = 0;
     double longitude = 0;
 
+    Cattle cattle;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_convert);
+        setContentView(R.layout.activity_get_live_weight);
 
         if(getSupportActionBar() != null){
             getSupportActionBar().setTitle("Get Live-Weight");
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+            getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close_white_24dp);
+        }
+
+        /*
+        *
+        * Fetch the cattle's ID passed from the CattleViewActivity and associate with final LW
+        *
+        * */
+        Bundle bundle = getIntent().getExtras();
+
+        if(bundle != null){
+            cattle = (Cattle) bundle.getSerializable(Cattle.CATTLE);
         }
 
         inputHG = findViewById(R.id.input_hg);
@@ -89,7 +106,7 @@ public class ConvertActivity extends AppCompatActivity {
         APIService apiService = new APIService(this);
 
         final ProgressDialog progressDialog = Utils.getProgressDialog(this, "Processing...", false);
-        final AlertDialog alertDialog = Utils.getSimpleDialog(ConvertActivity.this, "");
+        final AlertDialog alertDialog = Utils.getSimpleDialog(LiveWeightActivity.this, "");
 
         progressDialog.show();
 
@@ -97,6 +114,15 @@ public class ConvertActivity extends AppCompatActivity {
         User user = accountUtils.getUserDetails();
 
         RequestParams params = new RequestParams();
+
+        /*
+        *
+        * If cattle object has been passed, then fill these values
+        *
+        * */
+        if(cattle != null){
+            params.put(Cattle.CATTLE, String.valueOf(cattle.getId()));
+        }
 
         params.put(User.ID, String.valueOf(user.getUserId()));
         params.put(Submission.HG, inputHG.getText().toString());
@@ -126,7 +152,21 @@ public class ConvertActivity extends AppCompatActivity {
                         String meta = "Coordinates: " +
                                 obj.optString(Submission.LAT, "0") + ", " +
                                 obj.optString(Submission.LNG, "0");
-                        txtMeta.setText(meta);
+                        // txtMeta.setText(meta);
+
+                        if(cattle != null){
+
+                            /*
+                            *
+                            * Return value to previous page
+                            *
+                            * */
+                            Intent intent = new Intent();
+                            intent.putExtra(Cattle.LIVE_WEIGHT, LW);
+                            setResult(Activity.RESULT_OK, intent);
+
+                            finish();
+                        }
                     }
 
                 } catch (JSONException e) {
@@ -137,7 +177,7 @@ public class ConvertActivity extends AppCompatActivity {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.e(TAG, "Post: " + error.getLocalizedMessage());
-                Toast.makeText(ConvertActivity.this, "Could not post data",
+                Toast.makeText(LiveWeightActivity.this, "Could not post data",
                         Toast.LENGTH_SHORT).show();
                 progressDialog.dismiss();
 
@@ -237,7 +277,7 @@ public class ConvertActivity extends AppCompatActivity {
                                 public void onClick(DialogInterface dialogInterface, int i) {
 
                                     // Prompt the user once explanation has been shown
-                                    ActivityCompat.requestPermissions(ConvertActivity.this,
+                                    ActivityCompat.requestPermissions(LiveWeightActivity.this,
                                             new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                                             Constants.RC_PERMISSION_REQUEST_LOCATION);
                                 }

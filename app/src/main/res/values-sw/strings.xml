@@ -12,8 +12,8 @@
     <string name="get_feed_ration">Hesabu Chakula</string>
     <string name="heart_girth_cm">Kipimo cha Heart Girth (cm)</string>
     <string name="id_number">Nambari ya Kitambulisho</string>
-    <string name="live_weight">Kipimo cha Live Weight</string>
-    <string name="live_weight_label">Kipimo cha Live Weight</string>
+    <string name="live_weight">Uzito</string>
+    <string name="live_weight_label">Uzito</string>
     <string name="location_permission">Programu inahitaji upatikanaji wa eneo lako la sasa ili kuwasilisha vipimo. Tafadhali ruhusu kibali hiki kuendelea</string>
     <string name="log_in">Ingia</string>
     <string name="logout">Toka</string>
@@ -34,4 +34,8 @@
     <string name="action_sign_in_short">Ingia</string>
     <string name="action_sign_in">Ingia</string>
     <string name="about">Kuhusu</string>
+    <string name="delete">Ondoa</string>
+    <string name="tag">Jina</string>
+    <string name="breed">Aina</string>
+    <string name="added_on">Alisajiliwa</string>
 </resources>

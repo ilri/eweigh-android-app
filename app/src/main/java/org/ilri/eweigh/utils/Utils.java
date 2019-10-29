@@ -22,9 +22,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.DecimalFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -69,9 +71,34 @@ public class Utils {
 
     public static String getCurrentDate(){
         Calendar c = Calendar.getInstance();
-        SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.ENGLISH);
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
 
         return df.format(c.getTime());
+    }
+
+    /**
+     *
+     * https://stackoverflow.com/a/44579914/3310235
+     *
+     * */
+    public static String formatDate(String dateStr){
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
+        Date date = null;
+
+        try {
+            date = sdf.parse(dateStr);
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        if(date != null){
+            SimpleDateFormat df = new SimpleDateFormat("MMM d, yyyy", Locale.ENGLISH);
+            return df.format(date);
+        }
+        else{
+            return "-";
+        }
     }
 
     public static ProgressDialog getProgressDialog(Context context, String message, boolean cancellable){

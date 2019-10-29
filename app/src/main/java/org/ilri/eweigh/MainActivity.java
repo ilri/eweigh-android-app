@@ -1,26 +1,18 @@
 package org.ilri.eweigh;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
 import com.marcinorlowski.fonty.Fonty;
 
-import org.ilri.eweigh.accounts.AccountUtils;
 import org.ilri.eweigh.accounts.LoginActivity;
-import org.ilri.eweigh.accounts.MyAccountActivity;
 import org.ilri.eweigh.accounts.RegisterActivity;
-import org.ilri.eweigh.hg_lw.ConvertActivity;
-import org.ilri.eweigh.utils.Utils;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 

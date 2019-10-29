@@ -3,7 +3,7 @@
 
     <string name="no_connection">No Connection</string>
     <string name="no_info_found">No Info Found</string>
-    <string name="live_weight">Live Weight</string>
+    <string name="live_weight">Live Weight (kg)</string>
 
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password</string>
@@ -39,4 +39,7 @@
     <string name="live_weight_label">Live Weight</string>
     <string name="get_feed_ration">Get Feed Ration</string>
     <string name="delete">Delete</string>
+    <string name="tag">Tag</string>
+    <string name="breed">Breed</string>
+    <string name="added_on">Added</string>
 </resources>
