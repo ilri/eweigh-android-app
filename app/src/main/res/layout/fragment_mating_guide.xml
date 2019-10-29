@@ -11,25 +11,20 @@
         android:orientation="vertical"
         style="@style/CardTheme">
 
-        <ProgressBar
-            android:id="@+id/progress_bar"
-            style="?android:attr/progressBarStyleHorizontal"
-            android:theme="@style/ProgressBarTheme"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:indeterminate="true"
-            android:visibility="gone"/>
-
-        <TextView
-            android:id="@+id/txt_blank_state"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:theme="@style/BlankState"
-            android:visibility="gone"/>
-
         <TextView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:text="@string/mating_intro"
+            style="@style/IntroTextStyle"/>
+
+        <TextView
+            android:id="@+id/txt_response"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:textSize="16sp"
+            android:textAllCaps="true"/>
+
     </LinearLayout>
 
 </LinearLayout>

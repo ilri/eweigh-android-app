@@ -8,12 +8,12 @@
     <string name="email_address">Barua Pepe</string>
     <string name="email_mobile_no">Nambari ya Simu</string>
     <string name="full_name">Majina Kamili</string>
-    <string name="get_live_weight">Hesabu Uzito</string>
+    <string name="get_live_weight">Hesabu Uzani</string>
     <string name="get_feed_ration">Hesabu Chakula</string>
     <string name="heart_girth_cm">Kipimo cha Heart Girth (cm)</string>
     <string name="id_number">Nambari ya Kitambulisho</string>
-    <string name="live_weight">Uzito</string>
-    <string name="live_weight_label">Uzito</string>
+    <string name="live_weight">Uzani</string>
+    <string name="live_weight_label">Uzani</string>
     <string name="location_permission">Programu inahitaji upatikanaji wa eneo lako la sasa ili kuwasilisha vipimo. Tafadhali ruhusu kibali hiki kuendelea</string>
     <string name="log_in">Ingia</string>
     <string name="logout">Toka</string>
@@ -47,4 +47,5 @@
     <string name="required">Inahitajika</string>
     <string name="male">Kiume</string>
     <string name="female">Kike</string>
+    <string name="mating_intro">Mwongozo huu hukusaidia kuamua wapi ng\'ombe iko tayari kwa kupandana kulingana na uzani wao:</string>
 </resources>

@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModelProviders;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.fonts.Font;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -16,6 +17,7 @@ import android.widget.Toast;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.marcinorlowski.fonty.Fonty;
 
 import org.ilri.eweigh.accounts.AccountUtils;
 import org.ilri.eweigh.accounts.MyAccountActivity;
@@ -60,6 +62,10 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         btnAbout.setOnClickListener(this);
 
         fetchBundle();
+
+        Utils.setLocale(this, "sw");
+
+        Fonty.setFonts(this);
     }
 
     private void fetchBundle(){

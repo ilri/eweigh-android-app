@@ -29,25 +29,7 @@ public class AppController extends Application {
             .done();
 
         // Update locale
-        setLocale("sw");
-    }
-
-    public void setLocale(String localeName){
-        Locale locale = new Locale(localeName);
-        Locale.setDefault(locale);
-        Resources res = getResources();
-        Configuration config = res.getConfiguration();
-
-        if (Build.VERSION.SDK_INT >= 21) {
-            config.setLocale(locale);
-            getApplicationContext().createConfigurationContext(config);
-
-            Log.e(TAG, "Updating locale: " + localeName);
-        }
-        else {
-            config.locale = locale;
-            res.updateConfiguration(config, res.getDisplayMetrics());
-        }
+        Utils.setLocale(this, "sw");
     }
 
     public static synchronized AppController getInstance() {

@@ -121,6 +121,8 @@ public class CattleActivity extends AppCompatActivity implements AdapterView.OnI
         RequestParams params = new RequestParams();
         params.put(User.ID, String.valueOf(user.getUserId()));
 
+        final int recordCount = cvm.getCount();
+
         apiService.post(URL.Cattle, params, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
@@ -145,7 +147,7 @@ public class CattleActivity extends AppCompatActivity implements AdapterView.OnI
                                 cvm.insert(c);
                             }
                         }
-                        else{
+                        else if(arr.length() == 0 && recordCount == 0){
                             blankState.setVisibility(View.VISIBLE);
                         }
 
@@ -159,7 +161,10 @@ public class CattleActivity extends AppCompatActivity implements AdapterView.OnI
                 public void onErrorResponse(VolleyError error) {
                     Log.d(TAG, "Error: " + error.getMessage());
                     progressBar.setVisibility(View.GONE);
-                    blankState.setVisibility(View.VISIBLE);
+
+                    if(recordCount == 0){
+                        blankState.setVisibility(View.VISIBLE);
+                    }
                 }
             });
     }

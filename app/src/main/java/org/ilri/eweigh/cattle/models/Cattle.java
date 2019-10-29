@@ -30,6 +30,7 @@ public class Cattle implements Serializable {
     public static final String USER_ID = "userid";
     public static final String TAG = "tag";
     public static final String BREED = "breed";
+    public static final String BREED_ID = "breedid";
     public static final String GENDER = "gender";
     public static final String LIVE_WEIGHT = "lw";
     public static final String CREATED_ON = "createdon";
@@ -43,7 +44,7 @@ public class Cattle implements Serializable {
     @PrimaryKey
     private int id;
 
-    private int userId;
+    private int userId, breedId;
     private double liveWeight;
     private String tag, breed, gender, createdOn;
 
@@ -56,6 +57,7 @@ public class Cattle implements Serializable {
             this.userId = obj.getInt(USER_ID);
             this.tag = obj.optString(TAG, "-");
             this.breed = obj.optString(BREED, "-");
+            this.breedId = obj.optInt(BREED_ID, 0);
             this.gender = obj.optString(GENDER, GENDER_FEMALE);
             this.liveWeight = obj.optInt(LIVE_WEIGHT, 0);
             this.createdOn = obj.optString(CREATED_ON, "-");
@@ -103,6 +105,14 @@ public class Cattle implements Serializable {
 
     public void setBreed(String breed) {
         this.breed = breed;
+    }
+
+    public int getBreedId() {
+        return breedId;
+    }
+
+    public void setBreedId(int breedId) {
+        this.breedId = breedId;
     }
 
     public String getGender() {

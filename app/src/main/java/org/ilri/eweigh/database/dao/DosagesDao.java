@@ -4,7 +4,6 @@ import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.Query;
 
-import org.ilri.eweigh.cattle.models.Breed;
 import org.ilri.eweigh.cattle.models.Dosage;
 
 import java.util.List;
@@ -31,7 +30,7 @@ public interface DosagesDao {
     int getCount();
 
     @Query("SELECT * FROM dosages WHERE id = :id")
-    Breed getDosage(int id);
+    Dosage getDosage(int id);
 
     @Insert
     void insert(Dosage... dosage);

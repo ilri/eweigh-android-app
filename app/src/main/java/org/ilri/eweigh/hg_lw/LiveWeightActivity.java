@@ -177,11 +177,10 @@ public class LiveWeightActivity extends AppCompatActivity {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.e(TAG, "Post: " + error.getLocalizedMessage());
-                Toast.makeText(LiveWeightActivity.this, "Could not post data",
-                        Toast.LENGTH_SHORT).show();
+
                 progressDialog.dismiss();
 
-                alertDialog.setMessage("Could not post data");
+                alertDialog.setMessage("Could not complete request");
                 alertDialog.show();
             }
         });

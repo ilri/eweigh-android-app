@@ -32,7 +32,8 @@ public class Breed implements Serializable {
     @PrimaryKey
     private int id;
 
-    private String breed, matureWeight;
+    private int matureWeight;
+    private String breed;
 
     public Breed(){}
 
@@ -41,7 +42,7 @@ public class Breed implements Serializable {
         this.breed = breed;
     }
 
-    public Breed(int id, String breed, String matureWeight){
+    public Breed(int id, String breed, int matureWeight){
         this.id = id;
         this.breed = breed;
         this.matureWeight = matureWeight;
@@ -52,7 +53,7 @@ public class Breed implements Serializable {
         try {
             this.id = obj.getInt(ID);
             this.breed = obj.getString(BREED);
-            this.matureWeight = obj.getString(MATURE_WEIGHT);
+            this.matureWeight = obj.getInt(MATURE_WEIGHT);
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -75,11 +76,11 @@ public class Breed implements Serializable {
         this.breed = breed;
     }
 
-    public String getMatureWeight() {
+    public int getMatureWeight() {
         return matureWeight;
     }
 
-    public void setMatureWeight(String matureWeight) {
+    public void setMatureWeight(int matureWeight) {
         this.matureWeight = matureWeight;
     }
 

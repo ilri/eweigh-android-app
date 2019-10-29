@@ -3,11 +3,13 @@ package org.ilri.eweigh.utils;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import androidx.appcompat.app.AlertDialog;
 
+import android.os.Build;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,6 +34,24 @@ import java.util.Locale;
 
 public class Utils {
     public static final String TAG = Utils.class.getSimpleName();
+
+    public static void setLocale(Context context, String localeName){
+        Locale locale = new Locale(localeName);
+        Locale.setDefault(locale);
+        Resources res = context.getResources();
+        Configuration config = res.getConfiguration();
+
+        if (Build.VERSION.SDK_INT >= 21) {
+            config.setLocale(locale);
+            context.createConfigurationContext(config);
+
+            Log.e(TAG, "Updating locale: " + localeName);
+        }
+        else {
+            config.locale = locale;
+            res.updateConfiguration(config, res.getDisplayMetrics());
+        }
+    }
 
     /**
      *

@@ -35,10 +35,12 @@ import com.google.android.material.tabs.TabLayout;
 import com.marcinorlowski.fonty.Fonty;
 
 import org.ilri.eweigh.R;
+import org.ilri.eweigh.cattle.models.Breed;
 import org.ilri.eweigh.cattle.models.Cattle;
 import org.ilri.eweigh.cattle.models.ChemicalAgent;
 import org.ilri.eweigh.cattle.models.Disease;
 import org.ilri.eweigh.cattle.models.Dosage;
+import org.ilri.eweigh.database.viewmodel.BreedsViewModel;
 import org.ilri.eweigh.database.viewmodel.CattleViewModel;
 import org.ilri.eweigh.database.viewmodel.DosagesViewModel;
 import org.ilri.eweigh.feeds.Feed;
@@ -478,11 +480,11 @@ public class CattleViewActivity extends AppCompatActivity {
      *
      * */
     public static class MatingGuideFragment extends Fragment {
-
-        ProgressBar progressBar;
-        TextView blankState;
-
         private Context context;
+
+        TextView txtResponse;
+
+        BreedsViewModel bvm;
 
         private Cattle cattle;
 
@@ -494,6 +496,8 @@ public class CattleViewActivity extends AppCompatActivity {
         @Override
         public void onCreate(@Nullable Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
+
+            bvm = ViewModelProviders.of(this).get(BreedsViewModel.class);
         }
 
         @Override
@@ -501,20 +505,35 @@ public class CattleViewActivity extends AppCompatActivity {
                                  Bundle savedInstanceState) {
             View view = inflater.inflate(R.layout.fragment_mating_guide, container, false);
 
-            progressBar = view.findViewById(R.id.progress_bar);
+            txtResponse = view.findViewById(R.id.txt_response);
 
-            blankState = view.findViewById(R.id.txt_blank_state);
-            blankState.setText("No mating guide available");
+            if(cattle.isHeifer()){
+                Breed breed = bvm.getBreed(cattle.getBreedId());
 
-            fetchInfo();
+                /*
+                 *
+                 * A cow is to be mated at 65% of their mature weight
+                 *
+                 * */
+                double referenceWeight = breed.getMatureWeight() * 0.65;
+
+                if(referenceWeight >= cattle.getLiveWeight()){
+                    txtResponse.setText("Ready to mate");
+                    txtResponse.setTextColor(Color.BLUE);
+                }
+                else{
+                    txtResponse.setText("Not ready to mate");
+                    txtResponse.setTextColor(Color.RED);
+                }
+            }
+            else{
+                txtResponse.setText("No info for bulls");
+                txtResponse.setTextColor(Color.RED);
+            }
 
             Fonty.setFonts(container);
 
             return view;
-        }
-
-        private void fetchInfo(){
-
         }
     }
 
