@@ -23,9 +23,10 @@ public class AboutActivity extends AppCompatActivity {
         TextView txtAbout = findViewById(R.id.txt_about);
 
         String about = "" +
-                "<p>E-Weigh will allow farmers to farmers estimate the live-weight (LW) of cattle by\n" +
+                "<p>eWeigh will allow farmers to farmers estimate the live-weight (LW) of cattle by\n" +
                 "accessing a dedicated, proven algorithm embedded in a smart-phone application,\n" +
-                "requiring only a heart-girth measurement as an input.</p>";
+                "requiring only a heart-girth measurement as an input.</p>" +
+                "<p>v" + BuildConfig.VERSION_NAME + "</p>";
 
         txtAbout.setText(Html.fromHtml(about));
 

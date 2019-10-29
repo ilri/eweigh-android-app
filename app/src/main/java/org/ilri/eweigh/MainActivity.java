@@ -31,12 +31,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Button btnLogin = findViewById(R.id.btn_login);
         btnLogin.setOnClickListener(this);
 
-        Button btnAbout = findViewById(R.id.btn_about);
-        btnAbout.setOnClickListener(this);
-
-        TextView txtAppNameVersion = findViewById(R.id.txt_app_name_version);
-        txtAppNameVersion.setText(String.format("v%s", BuildConfig.VERSION_NAME));
-
         Fonty.setFonts(this);
     }
 
@@ -51,10 +45,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             case R.id.btn_login:
                 startActivity(new Intent(this, LoginActivity.class));
-                break;
-
-            case R.id.btn_about:
-                startActivity(new Intent(this, AboutActivity.class));
                 break;
         }
     }
