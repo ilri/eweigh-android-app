@@ -24,7 +24,7 @@ import org.ilri.eweigh.feeds.Feed;
         Cattle.class,
         Dosage.class,
         Feed.class
-}, version = 4, exportSchema = false)
+}, version = 5, exportSchema = false)
 
 public abstract class AppDatabase extends RoomDatabase {
     private static AppDatabase INSTANCE;

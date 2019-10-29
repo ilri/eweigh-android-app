@@ -45,7 +45,7 @@ public class Cattle implements Serializable {
 
     private int userId;
     private double liveWeight;
-    private String tag, breed, createdOn;
+    private String tag, breed, gender, createdOn;
 
     public Cattle(){}
 
@@ -56,6 +56,7 @@ public class Cattle implements Serializable {
             this.userId = obj.getInt(USER_ID);
             this.tag = obj.optString(TAG, "-");
             this.breed = obj.optString(BREED, "-");
+            this.gender = obj.optString(GENDER, GENDER_FEMALE);
             this.liveWeight = obj.optInt(LIVE_WEIGHT, 0);
             this.createdOn = obj.optString(CREATED_ON, "-");
 
@@ -104,6 +105,14 @@ public class Cattle implements Serializable {
         this.breed = breed;
     }
 
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
     public String getCreatedOn() {
         return createdOn;
     }
@@ -125,5 +134,13 @@ public class Cattle implements Serializable {
 
     public static boolean hasItems(JSONArray array){
         return array.length() > 0;
+    }
+
+    public boolean isBull(){
+        return gender.equals(GENDER_MALE);
+    }
+
+    public boolean isHeifer(){
+        return gender.equals(GENDER_FEMALE);
     }
 }

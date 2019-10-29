@@ -160,10 +160,12 @@ public class CattleViewActivity extends AppCompatActivity {
 
             TextView txtTag = view.findViewById(R.id.txt_tag);
             TextView txtBreed = view.findViewById(R.id.txt_breed);
+            TextView txtGender = view.findViewById(R.id.txt_gender);
             TextView txtDateAdded = view.findViewById(R.id.txt_date_added);
             txtLiveWeight = view.findViewById(R.id.txt_live_weight);
 
             txtTag.setText(String.format("%s: %s", context.getString(R.string.tag), cattle.getTag()));
+            txtGender.setText(String.format("%s: %s", context.getString(R.string.gender), cattle.getGender()));
             txtBreed.setText(String.format("%s: %s", context.getString(R.string.breed), cattle.getBreed()));
             txtDateAdded.setText(String.format("%s: %s", context.getString(R.string.added_on),
                     Utils.formatDate(cattle.getCreatedOn())));
