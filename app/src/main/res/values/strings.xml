@@ -42,4 +42,12 @@
     <string name="tag">Tag</string>
     <string name="breed">Breed</string>
     <string name="added_on">Added</string>
+    <string name="dosage_intro">Select the disease you wish to treat and the chemical agent used to treat it:</string>
+    <string name="feeds_intro">Click the button below to get the diet for this cattle:</string>
+    <string name="dosage_warning">NOTE: This is intended for general dosing information only. Always read Product Safety Data Sheets before use.</string>
+    <string name="select_gender">Select gender</string>
+    <string name="select_breed">Select breed</string>
+    <string name="required">Required</string>
+    <string name="male">Male</string>
+    <string name="female">Female</string>
 </resources>

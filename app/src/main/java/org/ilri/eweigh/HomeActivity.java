@@ -23,7 +23,7 @@ import org.ilri.eweigh.cattle.models.Breed;
 import org.ilri.eweigh.cattle.models.Dosage;
 import org.ilri.eweigh.database.viewmodel.BreedsViewModel;
 import org.ilri.eweigh.database.viewmodel.DosagesViewModel;
-import org.ilri.eweigh.feeds.FeedActivity;
+import org.ilri.eweigh.feeds.FeedsActivity;
 import org.ilri.eweigh.feeds.Feed;
 import org.ilri.eweigh.database.viewmodel.FeedsViewModel;
 import org.ilri.eweigh.cattle.CattleActivity;
@@ -143,7 +143,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                 break;
 
             case R.id.btn_get_feed_ration:
-                startActivity(new Intent(this, FeedActivity.class));
+                startActivity(new Intent(this, FeedsActivity.class));
                 break;
 
             case R.id.btn_view_submissions:

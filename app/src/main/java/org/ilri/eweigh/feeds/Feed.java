@@ -51,6 +51,8 @@ public class Feed implements Serializable {
     public static final String FORAGE = "forage";
     public static final String CONCENTRATE = "concentrate";
 
+    public static final String RATION = "ration";
+
     /**
      *
      * Model vars

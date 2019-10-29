@@ -21,6 +21,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -55,7 +56,7 @@ public class CattleActivity extends AppCompatActivity implements AdapterView.OnI
 
     CattleAdapter adapter;
     ListView listView;
-    List<Cattle> cattle = new ArrayList<>();
+    List<Cattle> cattleList = new ArrayList<>();
 
     ProgressBar progressBar;
     TextView blankState;
@@ -64,6 +65,8 @@ public class CattleActivity extends AppCompatActivity implements AdapterView.OnI
     User user;
 
     CattleViewModel cvm;
+
+    String gender = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -127,7 +130,7 @@ public class CattleActivity extends AppCompatActivity implements AdapterView.OnI
                     try {
                         JSONArray arr = new JSONArray(response);
 
-                        cattle = new ArrayList<>();
+                        cattleList = new ArrayList<>();
 
                         if(arr.length() > 0){
                             blankState.setVisibility(View.GONE);
@@ -136,9 +139,9 @@ public class CattleActivity extends AppCompatActivity implements AdapterView.OnI
 
                             for(int i=0; i<arr.length(); i++){
                                 Cattle c = new Cattle(arr.getJSONObject(i));
-                                cattle.add(c);
+                                cattleList.add(c);
 
-                                // Store cattle locally
+                                // Store cattleList locally
                                 cvm.insert(c);
                             }
                         }
@@ -169,9 +172,11 @@ public class CattleActivity extends AppCompatActivity implements AdapterView.OnI
                 .inflate(R.layout.fragment_add_cattle, null);
 
         final EditText inputTag = view.findViewById(R.id.input_tag);
-        inputTag.setFilters(new InputFilter[] {new InputFilter.AllCaps()});
-
         final Spinner spinnerBreeds = view.findViewById(R.id.spinner_breeds);
+        final RadioButton radioGenderFemale = view.findViewById(R.id.radio_gender_female);
+
+        // Tags should be in capital
+        inputTag.setFilters(new InputFilter[] {new InputFilter.AllCaps()});
 
         // Populate breeds
         bvm.getAll().observe(this, new Observer<List<Breed>>() {
@@ -213,10 +218,14 @@ public class CattleActivity extends AppCompatActivity implements AdapterView.OnI
                 int breed = b.getId();
 
                 if(TextUtils.isEmpty(tag)){
-                    inputTag.setError("Required");
+                    inputTag.setError(getString(R.string.required));
                 }
                 else if(breed == 0){
-                    ((TextView) spinnerBreeds.getSelectedView()).setError("Select breed");
+                    ((TextView) spinnerBreeds.getSelectedView())
+                            .setError(getString(R.string.select_breed));
+                }
+                else if(TextUtils.isEmpty(gender)){
+                    radioGenderFemale.setError(getString(R.string.select_gender));
                 }
                 else{
                     progressDialog.show();
@@ -224,6 +233,7 @@ public class CattleActivity extends AppCompatActivity implements AdapterView.OnI
                     RequestParams params = new RequestParams();
                     params.put(User.ID, String.valueOf(user.getUserId()));
                     params.put(Cattle.TAG, tag);
+                    params.put(Cattle.GENDER, gender);
                     params.put(Cattle.BREED, String.valueOf(breed));
 
                     apiService.post(
@@ -245,7 +255,9 @@ public class CattleActivity extends AppCompatActivity implements AdapterView.OnI
                                             spinnerBreeds.setSelection(0);
 
                                             Cattle c = new Cattle(obj.getJSONObject(Cattle.CATTLE));
-                                            cattle.add(0, c);
+                                            cattleList.add(0, c);
+
+                                            cvm.insert(c);
 
                                             adapter.notifyDataSetChanged();
                                         }
@@ -269,7 +281,7 @@ public class CattleActivity extends AppCompatActivity implements AdapterView.OnI
                                     progressDialog.dismiss();
 
                                     Toast.makeText(CattleActivity.this,
-                                            "Could not add cattle", Toast.LENGTH_LONG).show();
+                                            "Could not add cattleList", Toast.LENGTH_LONG).show();
                                 }
                             });
                 }
@@ -282,6 +294,19 @@ public class CattleActivity extends AppCompatActivity implements AdapterView.OnI
                 dialog.dismiss();
             }
         });
+    }
+
+    public void onGenderRadioChanged(View v) {
+        switch (v.getId()) {
+
+            case R.id.radio_gender_male:
+                gender = Cattle.GENDER_MALE;
+                break;
+
+            case R.id.radio_gender_female:
+                gender = Cattle.GENDER_FEMALE;
+                break;
+        }
     }
 
     @Override

@@ -41,6 +41,8 @@ import org.ilri.eweigh.cattle.models.Disease;
 import org.ilri.eweigh.cattle.models.Dosage;
 import org.ilri.eweigh.database.viewmodel.CattleViewModel;
 import org.ilri.eweigh.database.viewmodel.DosagesViewModel;
+import org.ilri.eweigh.feeds.Feed;
+import org.ilri.eweigh.feeds.FeedsActivity;
 import org.ilri.eweigh.hg_lw.LiveWeightActivity;
 import org.ilri.eweigh.network.APIService;
 import org.ilri.eweigh.network.RequestParams;
@@ -49,7 +51,6 @@ import org.ilri.eweigh.utils.URL;
 import org.ilri.eweigh.utils.Utils;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 import java.util.List;
 
@@ -57,7 +58,7 @@ public class CattleViewActivity extends AppCompatActivity {
     public static final String TAG = CattleViewActivity.class.getSimpleName();
 
     public static final int RC_LIVE_WEIGHT = 100;
-    public static final int RC_FOOD_RATION = 200;
+    public static final int RC_FEED_RATION = 200;
 
     SectionsPagerAdapter mSectionsPagerAdapter;
     ViewPager mViewPager;
@@ -176,7 +177,7 @@ public class CattleViewActivity extends AppCompatActivity {
                     /*
                      * Send a request to the LiveWeightActivity class to calculate the live weight:
                      *
-                     * 1. Pass cattle object
+                     * 1. Pass cattleList object
                      *
                      * This returns the final value to the onActivityResult function and we can
                      * update the UI and database values
@@ -208,10 +209,15 @@ public class CattleViewActivity extends AppCompatActivity {
 
                         txtLiveWeight.setText(String.valueOf(liveWeight));
 
-                        // Update cattle object in database
+                        // Update cattleList object in database
                         cattle.setLiveWeight(liveWeight);
 
                         cvm.update(cattle);
+
+                        // Update fragments
+                        new FeedsFragment(context, cattle);
+                        new DosagesFragment(context, cattle);
+                        new MatingGuideFragment(context, cattle);
                     }
                     else{
                         Toast.makeText(context, "Could not fetch live weight", Toast.LENGTH_SHORT).show();
@@ -230,11 +236,9 @@ public class CattleViewActivity extends AppCompatActivity {
      *
      * */
     public static class FeedsFragment extends Fragment {
-
-        ProgressBar progressBar;
-        TextView blankState;
-
         private Context context;
+
+        TextView txtRation;
 
         private Cattle cattle;
 
@@ -253,21 +257,54 @@ public class CattleViewActivity extends AppCompatActivity {
                                  Bundle savedInstanceState) {
             View view = inflater.inflate(R.layout.fragment_feeds, container, false);
 
-            progressBar = view.findViewById(R.id.progress_bar);
+            txtRation = view.findViewById(R.id.txt_feed_ration);
 
-            blankState = view.findViewById(R.id.txt_blank_state);
-            blankState.setText("No feed info");
-            blankState.setVisibility(View.VISIBLE);
+            view.findViewById(R.id.btn_get_feed_ration).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
 
-            fetchInfo();
+                    /*
+                     * Send a request to the FeedsActivity class to get :
+                     *
+                     * 1. Pass cattleList object
+                     *
+                     * This returns the final value to the onActivityResult function and we can
+                     * update the UI and database values
+                     *
+                     * */
+                    Intent intent = new Intent(context, FeedsActivity.class);
+                    intent.putExtra(Cattle.CATTLE, cattle);
+
+                    startActivityForResult(intent, RC_FEED_RATION);
+                }
+            });
 
             Fonty.setFonts(container);
 
             return view;
         }
 
-        private void fetchInfo(){
+        @Override
+        public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+            super.onActivityResult(requestCode, resultCode, data);
 
+            if(requestCode == RC_FEED_RATION){
+
+                if(resultCode == Activity.RESULT_OK){
+                    String ration = data.getStringExtra(Feed.RATION);
+
+                    if(!ration.isEmpty()){
+                        txtRation.setText(ration);
+                        txtRation.setTextColor(Color.BLUE);
+                    }
+                    else{
+                        Toast.makeText(context, "Could not fetch feed rations", Toast.LENGTH_SHORT).show();
+                    }
+                }
+                else{
+                    Toast.makeText(context, "Request cancelled", Toast.LENGTH_SHORT).show();
+                }
+            }
         }
     }
 
@@ -358,7 +395,7 @@ public class CattleViewActivity extends AppCompatActivity {
             ChemicalAgent agent = (ChemicalAgent) spinnerAgents.getSelectedItem();
 
             if(Double.parseDouble(editLiveWeight.getText().toString()) == 0){
-                String s = "Get cattle's live weight first";
+                String s = "Get cattleList's live weight first";
                 editLiveWeight.setError(s);
 
                 alertDialog.setMessage(s);
@@ -510,7 +547,7 @@ public class CattleViewActivity extends AppCompatActivity {
 
     private void showDeleteCattleDialog(){
         AlertDialog alertDialog = Utils.getSimpleDialog(CattleViewActivity.this, "",
-                "Delete cattle?");
+                "Delete cattleList?");
 
         alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Delete", new DialogInterface.OnClickListener() {
             @Override

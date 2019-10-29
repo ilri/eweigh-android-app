@@ -11,6 +11,7 @@ import com.marcinorlowski.fonty.Fonty;
 
 import org.ilri.eweigh.R;
 import org.ilri.eweigh.cattle.models.Cattle;
+import org.ilri.eweigh.utils.Utils;
 
 import java.util.List;
 
@@ -55,7 +56,8 @@ public class CattleAdapter  extends BaseAdapter {
 
         ((TextView) view.findViewById(R.id.txt_tag)).setText(c.getTag());
         ((TextView) view.findViewById(R.id.txt_breed)).setText(String.format("Breed: %s", c.getBreed()));
-        ((TextView) view.findViewById(R.id.txt_date_created)).setText(String.format("Added On: %s", c.getCreatedOn()));
+        ((TextView) view.findViewById(R.id.txt_date_created))
+                .setText(String.format("Added: %s", Utils.formatDate(c.getCreatedOn())));
 
         return view;
     }

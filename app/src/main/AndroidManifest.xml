@@ -38,7 +38,7 @@
             android:name=".cattle.CattleViewActivity"
             android:theme="@style/AppTheme.NoActionBar"/>
 
-        <activity android:name=".feeds.FeedActivity" />
+        <activity android:name=".feeds.FeedsActivity" />
     </application>
 
 </manifest>

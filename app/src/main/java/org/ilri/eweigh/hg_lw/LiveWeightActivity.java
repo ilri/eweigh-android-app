@@ -97,7 +97,7 @@ public class LiveWeightActivity extends AppCompatActivity {
             }
         });
 
-        checkPermission();
+        checkLocationPermissions();
 
         Fonty.setFonts(this);
     }
@@ -257,7 +257,7 @@ public class LiveWeightActivity extends AppCompatActivity {
         }
     }
 
-    private void checkPermission(){
+    private void checkLocationPermissions(){
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 

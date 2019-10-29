@@ -4,8 +4,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -26,6 +28,7 @@ import com.android.volley.VolleyError;
 import com.marcinorlowski.fonty.Fonty;
 
 import org.ilri.eweigh.R;
+import org.ilri.eweigh.cattle.models.Cattle;
 import org.ilri.eweigh.database.viewmodel.FeedsViewModel;
 import org.ilri.eweigh.network.APIService;
 import org.ilri.eweigh.network.RequestParams;
@@ -40,8 +43,8 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
-public class FeedActivity extends AppCompatActivity {
-    public static final String TAG = FeedActivity.class.getSimpleName();
+public class FeedsActivity extends AppCompatActivity {
+    public static final String TAG = FeedsActivity.class.getSimpleName();
 
     FeedsViewModel fvm;
 
@@ -51,10 +54,12 @@ public class FeedActivity extends AppCompatActivity {
     String feedFor = Feed.FEED_FOR_MILK;
     String feedStyle = Feed.FEED_STYLE_STALL;
 
+    Cattle cattle;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_calculate_feed);
+        setContentView(R.layout.activity_feeds);
 
         if(getSupportActionBar() != null){
             getSupportActionBar().setTitle(getString(R.string.get_feed_ration));
@@ -63,12 +68,33 @@ public class FeedActivity extends AppCompatActivity {
             getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close_white_24dp);
         }
 
+        /*
+         *
+         * Fetch the cattle's ID passed from the CattleViewActivity and associate with final LW
+         *
+         * */
+        Bundle bundle = getIntent().getExtras();
+
+        if(bundle != null){
+            cattle = (Cattle) bundle.getSerializable(Cattle.CATTLE);
+        }
+
         fvm = ViewModelProviders.of(this).get(FeedsViewModel.class);
 
         editLiveWeight = findViewById(R.id.edit_txt_lw);
         editMilkProduction = findViewById(R.id.edit_txt_milk_production);
         editTargetWeight = findViewById(R.id.edit_txt_target_weight);
         editTargetDate = findViewById(R.id.edit_txt_target_date);
+
+        /*
+         *
+         * Update LiveWeight value and disable field
+         *
+         * */
+        if(cattle != null){
+            editLiveWeight.setText(String.valueOf(cattle.getLiveWeight()));
+            editLiveWeight.setEnabled(false);
+        }
 
         /*
         *
@@ -95,7 +121,7 @@ public class FeedActivity extends AppCompatActivity {
         editTargetDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new DatePickerDialog(FeedActivity.this, datePickerDialog,
+                new DatePickerDialog(FeedsActivity.this, datePickerDialog,
                         calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH),
                         calendar.get(Calendar.DAY_OF_MONTH)).show();
             }
@@ -129,11 +155,11 @@ public class FeedActivity extends AppCompatActivity {
                     }
                 }
 
-                ArrayAdapter<Feed> adapter = new ArrayAdapter<>(FeedActivity.this,
+                ArrayAdapter<Feed> adapter = new ArrayAdapter<>(FeedsActivity.this,
                         android.R.layout.simple_spinner_dropdown_item, forageFeeds);
                 spinnerForage.setAdapter(adapter);
 
-                ArrayAdapter<Feed> adapter2 = new ArrayAdapter<>(FeedActivity.this,
+                ArrayAdapter<Feed> adapter2 = new ArrayAdapter<>(FeedsActivity.this,
                         android.R.layout.simple_spinner_dropdown_item, concentrateFeeds);
                 spinnerConcentrate.setAdapter(adapter2);
             }
@@ -156,7 +182,7 @@ public class FeedActivity extends AppCompatActivity {
                     editLiveWeight.setError("Enter live weight");
                 }
                 else if(feedFor.isEmpty()){
-                    Toast.makeText(FeedActivity.this,
+                    Toast.makeText(FeedsActivity.this,
                             "Select purpose for feed", Toast.LENGTH_SHORT).show();
                 }
                 else if(feedFor.equals(Feed.FEED_FOR_MILK) && milkProduction.isEmpty()){
@@ -173,11 +199,11 @@ public class FeedActivity extends AppCompatActivity {
                     editTargetWeight.setError("Target weight should be greater than live weight");
                 }
                 else if(forage.getId() == 0){
-                    Toast.makeText(FeedActivity.this,
+                    Toast.makeText(FeedsActivity.this,
                             "Select Forage", Toast.LENGTH_SHORT).show();
                 }
                 else if(concentrate.getId() == 0){
-                    Toast.makeText(FeedActivity.this,
+                    Toast.makeText(FeedsActivity.this,
                             "Select Concentrate", Toast.LENGTH_SHORT).show();
                 }
                 else{
@@ -191,6 +217,15 @@ public class FeedActivity extends AppCompatActivity {
 
     private void getFeedRation(){
         RequestParams params = new RequestParams();
+
+        /*
+         *
+         * If cattle object has been passed, then fill these values
+         *
+         * */
+        if(cattle != null){
+            params.put(Cattle.CATTLE, String.valueOf(cattle.getId()));
+        }
 
         params.put(Feed.LIVE_WEIGHT, editLiveWeight.getText().toString());
         params.put(Feed.FEED_FOR, feedFor);
@@ -233,6 +268,20 @@ public class FeedActivity extends AppCompatActivity {
 
                         txtRation.setText(ration);
                         txtRation.setTextColor(Color.BLUE);
+
+                        if(cattle != null){
+
+                            /*
+                             *
+                             * Return value to previous page
+                             *
+                             * */
+                            Intent intent = new Intent();
+                            intent.putExtra(Feed.RATION, ration);
+                            setResult(Activity.RESULT_OK, intent);
+
+                            finish();
+                        }
                     }
 
                     ScrollView scrollView = findViewById(R.id.scrollView);

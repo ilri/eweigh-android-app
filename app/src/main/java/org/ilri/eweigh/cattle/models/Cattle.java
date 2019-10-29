@@ -14,6 +14,14 @@ public class Cattle implements Serializable {
 
     /**
      *
+     * Model constants
+     *
+     * */
+    public static final String GENDER_MALE = "male";
+    public static final String GENDER_FEMALE = "female";
+
+    /**
+     *
      * Response/request keys
      *
      * */
@@ -22,6 +30,7 @@ public class Cattle implements Serializable {
     public static final String USER_ID = "userid";
     public static final String TAG = "tag";
     public static final String BREED = "breed";
+    public static final String GENDER = "gender";
     public static final String LIVE_WEIGHT = "lw";
     public static final String CREATED_ON = "createdon";
 
