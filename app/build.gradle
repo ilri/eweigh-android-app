@@ -3,10 +3,10 @@ apply plugin: 'com.android.application'
 android {
     signingConfigs {
         config {
-            keyAlias 'eweigh'
-            keyPassword '2)hw8C!d\'Jh?gCNf'
+            keyAlias "eweigh"
+            keyPassword "2)hw8C!d'Jh?gCNf"
             storeFile file('C:/Users/Maxine/keystores/eweigh.jks')
-            storePassword '2)hw8C!d\'Jh?gCNf'
+            storePassword "2)hw8C!d'Jh?gCNf"
         }
     }
     compileSdkVersion 29
