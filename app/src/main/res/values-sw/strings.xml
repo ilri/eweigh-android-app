@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">e-weigh</string>
+    <string name="app_name">eWeigh</string>
     <string name="country">Nchi</string>
     <string name="county">Kata</string>
     <string name="create_one">Jisajilishe</string>
@@ -47,5 +47,5 @@
     <string name="required">Inahitajika</string>
     <string name="male">Kiume</string>
     <string name="female">Kike</string>
-    <string name="mating_intro">Mwongozo huu hukusaidia kuamua wapi ng\'ombe iko tayari kwa kupandana kulingana na uzani wao:</string>
+    <string name="mating_intro">Mwongozo huu hukusaidia kujua iwapo ng\'ombe yuko tayari kwa kupandikiza kulingana na uzani:</string>
 </resources>

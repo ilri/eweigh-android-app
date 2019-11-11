@@ -1,12 +1,17 @@
 package org.ilri.eweigh;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Html;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 
 import com.marcinorlowski.fonty.Fonty;
+
+import org.ilri.eweigh.misc.InfoActivity;
 
 public class AboutActivity extends AppCompatActivity {
 
@@ -29,6 +34,17 @@ public class AboutActivity extends AppCompatActivity {
                 "<p>v" + BuildConfig.VERSION_NAME + "</p>";
 
         txtAbout.setText(Html.fromHtml(about));
+
+        findViewById(R.id.btn_info).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(AboutActivity.this, InfoActivity.class);
+
+                // Specify page selected
+
+                startActivity(intent);
+            }
+        });
 
         Fonty.setFonts(this);
     }

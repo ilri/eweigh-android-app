@@ -51,5 +51,5 @@
     <string name="required">Required</string>
     <string name="male">Male</string>
     <string name="female">Female</string>
-    <string name="mating_intro">This guide helps you to determine where the cow is ready for mating based on their live weight:</string>
+    <string name="mating_intro">This guide helps you to determine whether the cow is ready for mating based on their live weight:</string>
 </resources>

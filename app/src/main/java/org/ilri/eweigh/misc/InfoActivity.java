@@ -3,6 +3,8 @@ package org.ilri.eweigh.misc;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.view.MenuItem;
+import android.view.View;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 
@@ -16,8 +18,10 @@ import org.ilri.eweigh.R;
 public class InfoActivity extends AppCompatActivity {
     public static final String TAG = InfoActivity.class.getSimpleName();
     public static final String INFO_PAGE = "info_page";
+    public static final String INFO_TITLE = "info_title";
 
     String pageUrl = "home.html";
+    String pageTitle = "Info";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,9 +32,17 @@ public class InfoActivity extends AppCompatActivity {
 
         if(bundle != null){
             pageUrl = bundle.getString(INFO_PAGE);
+            pageTitle = bundle.getString(INFO_TITLE);
         }
 
-        WebView webView = findViewById(R.id.wv_info);
+        if(getSupportActionBar() != null){
+            getSupportActionBar().setTitle(pageTitle);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+            getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close_white_24dp);
+        }
+
+        final WebView webView = findViewById(R.id.wv_info);
 
         WebSettings webSetting = webView.getSettings();
         webSetting.setBuiltInZoomControls(true);
@@ -45,5 +57,18 @@ public class InfoActivity extends AppCompatActivity {
         public boolean shouldOverrideUrlLoading(WebView view, String url){
             return super.shouldOverrideUrlLoading(view, url);
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch(item.getItemId()){
+
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }
