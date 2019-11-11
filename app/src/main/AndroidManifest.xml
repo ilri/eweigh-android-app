@@ -31,7 +31,7 @@
         <activity android:name=".accounts.RegisterActivity" />
         <activity android:name=".accounts.LoginActivity" />
         <activity android:name=".accounts.MyAccountActivity" />
-        <activity android:name=".HomeActivity" />
+        <activity android:name=".home.HomeActivity" />
         <activity android:name=".AboutActivity" />
         <activity android:name=".hg_lw.LiveWeightActivity" />
         <activity android:name=".hg_lw.SubmissionsActivity" />

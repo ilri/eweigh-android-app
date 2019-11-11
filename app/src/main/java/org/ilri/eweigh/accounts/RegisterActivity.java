@@ -16,10 +16,9 @@ import android.widget.Toast;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 
-import org.ilri.eweigh.HomeActivity;
+import org.ilri.eweigh.home.HomeActivity;
 import org.ilri.eweigh.R;
 import org.ilri.eweigh.accounts.models.User;
-import org.ilri.eweigh.misc.Country;
 import org.ilri.eweigh.misc.County;
 import org.ilri.eweigh.network.APIService;
 import org.ilri.eweigh.network.RequestParams;

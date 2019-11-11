@@ -20,8 +20,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.marcinorlowski.fonty.Fonty;
 
-import org.ilri.eweigh.HomeActivity;
-import org.ilri.eweigh.MainActivity;
+import org.ilri.eweigh.home.HomeActivity;
 import org.ilri.eweigh.R;
 import org.ilri.eweigh.accounts.models.User;
 import org.ilri.eweigh.network.APIService;

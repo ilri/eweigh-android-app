@@ -5,7 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 
 import org.ilri.eweigh.accounts.AccountUtils;
-import org.ilri.eweigh.accounts.models.User;
+import org.ilri.eweigh.home.HomeActivity;
 
 public class SplashActivity extends AppCompatActivity {
 
