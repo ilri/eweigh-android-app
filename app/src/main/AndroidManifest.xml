@@ -35,13 +35,12 @@
         <activity android:name=".AboutActivity" />
         <activity android:name=".hg_lw.LiveWeightActivity" />
         <activity android:name=".hg_lw.SubmissionsActivity" />
-
         <activity android:name=".cattle.CattleActivity" />
         <activity
             android:name=".cattle.CattleViewActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
-
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".feeds.FeedsActivity" />
+        <activity android:name=".misc.InfoActivity"/>
     </application>
 
 </manifest>
