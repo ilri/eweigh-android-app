@@ -78,7 +78,7 @@
         <item name="android:padding">15dp</item>
         <item name="android:layout_margin">5dp</item>
         <item name="android:radius">2dp</item>
-        <item name="android:elevation" tools:targetApi="lollipop">1dp</item>
+        <item name="android:elevation" tools:targetApi="lollipop">3dp</item>
     </style>
 
     <style name="ListCardTheme">

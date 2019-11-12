@@ -672,7 +672,7 @@ public class CattleViewActivity extends AppCompatActivity {
     }
 
     private void showDeleteCattleDialog(){
-        AlertDialog alertDialog = Utils.getSimpleDialog(CattleViewActivity.this, "",
+        AlertDialog alertDialog = Utils.getSimpleDialog(CattleViewActivity.this,
                 String.format("Delete %s?",  cattle.getTag()));
 
         alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Delete", new DialogInterface.OnClickListener() {

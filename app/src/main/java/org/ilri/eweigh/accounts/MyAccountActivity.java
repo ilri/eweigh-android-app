@@ -75,7 +75,7 @@ public class MyAccountActivity extends AppCompatActivity {
     }
 
     private void logOut(){
-        AlertDialog alertDialog = Utils.getSimpleDialog(MyAccountActivity.this, "",
+        AlertDialog alertDialog = Utils.getSimpleDialog(MyAccountActivity.this,
                 "Log out of account?");
 
         final AccountUtils accountUtils = new AccountUtils(MyAccountActivity.this);
