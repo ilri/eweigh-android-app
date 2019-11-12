@@ -3,7 +3,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/lightGray">
 
     <LinearLayout
         android:id="@+id/layout_list_cattle"
@@ -30,7 +31,8 @@
         <ListView
             android:id="@+id/list_view_cattle"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent"
+            android:divider="@null"/>
     </LinearLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton

@@ -48,6 +48,7 @@ dependencies {
 
     implementation 'com.github.MarcinOrlowski:fonty:2.1.0'
     implementation 'com.github.david-serrano:locationprovider:1.2'
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
 
     implementation 'org.apache.commons:commons-lang3:3.6'
 

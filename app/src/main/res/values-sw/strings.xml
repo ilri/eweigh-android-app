@@ -41,7 +41,7 @@
     <string name="added_on">Alisajiliwa</string>
     <string name="dosage_intro">Chagua ugonjwa katika orodha na aina ya dawa ya kutumia:</string>
     <string name="feeds_intro">Bonyeza kitufe utaelekezwa kwa orodha ya vyakula:</string>
-    <string name="dosage_warning">ILANI: Ujumbe huu umekusudiwa kama ushauri ya jumla pekee. Soma Karatasi za Takwimu za Usalama wa Bidhaa kila wakati kabla ya matumizi.</string>
+    <string name="dosage_warning">ILANI: Huu ni ushauri ya jumla pekee. Soma Karatasi za Takwimu za Usalama wa Bidhaa kila wakati kabla ya matumizi.</string>
     <string name="select_gender">Chagua jinsia</string>
     <string name="select_breed">Chagua aina</string>
     <string name="required">Inahitajika</string>

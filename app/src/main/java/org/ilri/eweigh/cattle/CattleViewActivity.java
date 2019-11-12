@@ -4,6 +4,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.viewpager.widget.ViewPager;
@@ -14,6 +15,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.DashPathEffect;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -24,13 +27,22 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.Legend;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.formatter.IFillFormatter;
+import com.github.mikephil.charting.interfaces.dataprovider.LineDataProvider;
+import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.google.android.material.tabs.TabLayout;
 import com.marcinorlowski.fonty.Fonty;
 
@@ -54,6 +66,7 @@ import org.ilri.eweigh.utils.Utils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CattleViewActivity extends AppCompatActivity {
@@ -137,6 +150,7 @@ public class CattleViewActivity extends AppCompatActivity {
     public static class DetailsFragment extends Fragment {
         private Context context;
 
+        LineChart lineChart;
         TextView txtLiveWeight;
 
         private Cattle cattle;
@@ -158,7 +172,7 @@ public class CattleViewActivity extends AppCompatActivity {
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
-            View view = inflater.inflate(R.layout.fragment_cattle_details, container, false);
+            View view = inflater.inflate(R.layout.fragment_details, container, false);
 
             TextView txtTag = view.findViewById(R.id.txt_tag);
             TextView txtBreed = view.findViewById(R.id.txt_breed);
@@ -194,9 +208,100 @@ public class CattleViewActivity extends AppCompatActivity {
                 }
             });
 
+            // Set up chart
+            lineChart = view.findViewById(R.id.chart_lw_trend);
+            lineChart.setBackgroundColor(Color.WHITE);
+
+            lineChart.getDescription().setEnabled(false);
+            lineChart.setTouchEnabled(true);
+
+            // enable scaling and dragging
+            lineChart.setDragEnabled(true);
+            lineChart.setScaleEnabled(true);
+
+            // if disabled, scaling can be done on x- and y-axis separately
+            lineChart.setPinchZoom(false);
+
+            lineChart.getLegend().setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
+
+            lineChart.setDrawGridBackground(false);
+            lineChart.setMaxHighlightDistance(300);
+
+            // Remove y-axis from the right of chart
+            lineChart.getAxisRight().setEnabled(false);
+
+            XAxis x = lineChart.getXAxis();
+            x.setPosition(XAxis.XAxisPosition.BOTTOM);
+
+            YAxis y = lineChart.getAxisLeft();
+            y.setLabelCount(6, false);
+            y.setPosition(YAxis.YAxisLabelPosition.OUTSIDE_CHART);
+            y.setDrawGridLines(false);
+
+            lineChart.animateXY(300, 300);
+            lineChart.invalidate();
+
+            buildChart();
+
             Fonty.setFonts(container);
 
             return view;
+        }
+
+        private void buildChart(){
+            ArrayList<Entry> values = new ArrayList<>();
+
+            int count = 45;
+            float range = 180;
+
+            for (int i = 0; i < count; i++) {
+                float val = (float) (Math.random() * (range + 1)) + 20;
+                values.add(new Entry(i, val));
+            }
+
+            LineDataSet set1;
+
+            if (lineChart.getData() != null && lineChart.getData().getDataSetCount() > 0) {
+                set1 = (LineDataSet) lineChart.getData().getDataSetByIndex(0);
+                set1.setValues(values);
+
+                lineChart.getData().notifyDataChanged();
+                lineChart.notifyDataSetChanged();
+            }
+            else {
+
+                set1 = new LineDataSet(values, "LiveWeight(KG) over time (days)");
+
+                int chartColor = Color.rgb(104, 241, 175);
+
+                set1.setMode(LineDataSet.Mode.CUBIC_BEZIER);
+                set1.setCubicIntensity(0.2f);
+                set1.setDrawFilled(true);
+                set1.setDrawCircles(false);
+                set1.setLineWidth(1.8f);
+                set1.setCircleRadius(4f);
+                set1.setCircleColor(Color.WHITE);
+                set1.setHighLightColor(chartColor);
+                set1.setColor(chartColor);
+                set1.setFillColor(chartColor);
+                set1.setFillAlpha(100);
+                set1.setDrawHorizontalHighlightIndicator(false);
+                set1.setFillFormatter(new IFillFormatter() {
+                    @Override
+                    public float getFillLinePosition(ILineDataSet dataSet, LineDataProvider dataProvider) {
+                        return lineChart.getAxisLeft().getAxisMinimum();
+                    }
+                });
+
+                // create a data object with the data sets
+                LineData data = new LineData(set1);
+
+                data.setValueTextSize(9f);
+                data.setDrawValues(false);
+
+                // set data
+                lineChart.setData(data);
+            }
         }
 
         @Override

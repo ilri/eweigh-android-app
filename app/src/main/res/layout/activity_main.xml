@@ -22,7 +22,7 @@
             android:layout_gravity="center"
             android:layout_marginTop="60dp"
             android:adjustViewBounds="true"
-            android:src="@drawable/app_logo_full"
+            android:src="@drawable/app_logo"
             android:contentDescription="@string/app_name"/>
 
         <TextView
