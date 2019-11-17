@@ -13,6 +13,8 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProviders;
+
 import android.os.Bundle;
 import android.provider.Settings;
 import android.text.TextUtils;
@@ -32,6 +34,7 @@ import org.ilri.eweigh.R;
 import org.ilri.eweigh.accounts.AccountUtils;
 import org.ilri.eweigh.accounts.models.User;
 import org.ilri.eweigh.cattle.models.Cattle;
+import org.ilri.eweigh.database.viewmodel.SubmissionsViewModel;
 import org.ilri.eweigh.hg_lw.models.Submission;
 import org.ilri.eweigh.network.APIService;
 import org.ilri.eweigh.network.RequestParams;
@@ -105,6 +108,8 @@ public class LiveWeightActivity extends AppCompatActivity {
     private void getLiveWeight(){
         APIService apiService = new APIService(this);
 
+        final SubmissionsViewModel svm = ViewModelProviders.of(this).get(SubmissionsViewModel.class);
+
         final ProgressDialog progressDialog = Utils.getProgressDialog(this, "Processing...", false);
         final AlertDialog alertDialog = Utils.getSimpleDialog(LiveWeightActivity.this, "");
 
@@ -153,6 +158,9 @@ public class LiveWeightActivity extends AppCompatActivity {
                                 obj.optString(Submission.LAT, "0") + ", " +
                                 obj.optString(Submission.LNG, "0");
                         // txtMeta.setText(meta);
+
+                        // Store value locally to retrieve later
+                        svm.insert(new Submission(obj));
 
                         if(cattle != null){
 

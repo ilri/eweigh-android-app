@@ -17,6 +17,7 @@ import org.ilri.eweigh.database.dao.BreedsDao;
 import org.ilri.eweigh.database.dao.CattleDao;
 import org.ilri.eweigh.database.dao.DosagesDao;
 import org.ilri.eweigh.database.dao.FeedsDao;
+import org.ilri.eweigh.database.dao.SubmissionsDao;
 import org.ilri.eweigh.feeds.Feed;
 
 @Database(entities = {
@@ -24,7 +25,7 @@ import org.ilri.eweigh.feeds.Feed;
         Cattle.class,
         Dosage.class,
         Feed.class
-}, version = 6, exportSchema = false)
+}, version = 7, exportSchema = false)
 
 public abstract class AppDatabase extends RoomDatabase {
     private static AppDatabase INSTANCE;
@@ -33,6 +34,7 @@ public abstract class AppDatabase extends RoomDatabase {
     public abstract CattleDao cattleDao();
     public abstract DosagesDao dosagesDao();
     public abstract FeedsDao feedsDao();
+    public abstract SubmissionsDao submissionsDao();
 
     public static AppDatabase getAppDatabase(Context context){
         if(INSTANCE == null){

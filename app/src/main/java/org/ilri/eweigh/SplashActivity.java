@@ -18,6 +18,7 @@ public class SplashActivity extends AppCompatActivity {
 
         if(accountUtils.isLoggedIn()){
             intent = new Intent(this, HomeActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         }
 
         startActivity(intent);

@@ -1,8 +1,12 @@
 package org.ilri.eweigh.hg_lw.models;
 
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
+@Entity(tableName = "submissions")
 public class Submission {
 
     /**
@@ -12,6 +16,7 @@ public class Submission {
      * */
     public static final String ID = "id";
     public static final String USER_ID = "userid";
+    public static final String CATTLE_ID = "userid";
     public static final String HG = "hg";
     public static final String LW = "lw";
     public static final String LAT = "lat";
@@ -23,7 +28,10 @@ public class Submission {
      * Model vars
      *
      * */
-    private int id, userId;
+    @PrimaryKey
+    private int id;
+
+    private int userId, cattleId;
     private double hg, lw, lat, lng;
     private String createdOn;
 
@@ -31,6 +39,7 @@ public class Submission {
         try {
             this.id = obj.getInt(ID);
             this.userId = obj.getInt(USER_ID);
+            this.cattleId = obj.getInt(CATTLE_ID);
             this.hg = obj.getDouble(HG);
             this.lw = obj.getDouble(LW);
             this.lat = obj.getDouble(LAT);
@@ -56,6 +65,14 @@ public class Submission {
 
     public void setUserId(int userId) {
         this.userId = userId;
+    }
+
+    public int getCattleId() {
+        return cattleId;
+    }
+
+    public void setCattleId(int cattleId) {
+        this.cattleId = cattleId;
     }
 
     public double getHg() {
