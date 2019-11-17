@@ -17,15 +17,20 @@ import com.marcinorlowski.fonty.Fonty;
 
 import org.ilri.eweigh.AboutActivity;
 import org.ilri.eweigh.R;
+import org.ilri.eweigh.accounts.AccountUtils;
 import org.ilri.eweigh.accounts.MyAccountActivity;
+import org.ilri.eweigh.accounts.models.User;
 import org.ilri.eweigh.cattle.CattleActivity;
 import org.ilri.eweigh.cattle.models.Breed;
 import org.ilri.eweigh.cattle.models.Dosage;
 import org.ilri.eweigh.database.viewmodel.BreedsViewModel;
 import org.ilri.eweigh.database.viewmodel.DosagesViewModel;
 import org.ilri.eweigh.database.viewmodel.FeedsViewModel;
+import org.ilri.eweigh.database.viewmodel.SubmissionsViewModel;
 import org.ilri.eweigh.feeds.Feed;
+import org.ilri.eweigh.hg_lw.models.Submission;
 import org.ilri.eweigh.network.APIService;
+import org.ilri.eweigh.network.RequestParams;
 import org.ilri.eweigh.utils.URL;
 import org.ilri.eweigh.utils.Utils;
 import org.json.JSONArray;
@@ -82,9 +87,16 @@ public class HomeActivity extends AppCompatActivity {
         final BreedsViewModel bvm = ViewModelProviders.of(this).get(BreedsViewModel.class);
         final FeedsViewModel fvm = ViewModelProviders.of(this).get(FeedsViewModel.class);
         final DosagesViewModel dvm = ViewModelProviders.of(this).get(DosagesViewModel.class);
+        final SubmissionsViewModel svm = ViewModelProviders.of(this).get(SubmissionsViewModel.class);
+
+        AccountUtils  accountUtils = new AccountUtils(this);
+        User user = accountUtils.getUserDetails();
+
+        RequestParams params = new RequestParams();
+        params.put(User.ID, String.valueOf(user.getUserId()));
 
         new APIService(this)
-                .get(URL.Bundle, new Response.Listener<String>() {
+                .post(URL.Bundle, params,  new Response.Listener<String>() {
 
                     @Override
                     public void onResponse(String response) {
@@ -131,6 +143,20 @@ public class HomeActivity extends AppCompatActivity {
                                     for (int i=0; i<dosages.length(); i++) {
                                         Dosage d = new Dosage(dosages.getJSONObject(i));
                                         dvm.insert(d);
+                                    }
+                                }
+                            }
+
+                            // Store submissions
+                            if(obj.has("submissions")){
+                                JSONArray submissions = obj.getJSONArray("submissions");
+
+                                if(Dosage.hasItems(submissions)){
+                                    svm.deleteAll();
+
+                                    for (int i=0; i<submissions.length(); i++) {
+                                        Submission s = new Submission(submissions.getJSONObject(i));
+                                        svm.insert(s);
                                     }
                                 }
                             }

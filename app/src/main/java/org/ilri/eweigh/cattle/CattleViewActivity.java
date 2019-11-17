@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.viewpager.widget.ViewPager;
 
@@ -55,9 +56,11 @@ import org.ilri.eweigh.cattle.models.Dosage;
 import org.ilri.eweigh.database.viewmodel.BreedsViewModel;
 import org.ilri.eweigh.database.viewmodel.CattleViewModel;
 import org.ilri.eweigh.database.viewmodel.DosagesViewModel;
+import org.ilri.eweigh.database.viewmodel.SubmissionsViewModel;
 import org.ilri.eweigh.feeds.Feed;
 import org.ilri.eweigh.feeds.FeedsActivity;
 import org.ilri.eweigh.hg_lw.LiveWeightActivity;
+import org.ilri.eweigh.hg_lw.models.Submission;
 import org.ilri.eweigh.network.APIService;
 import org.ilri.eweigh.network.RequestParams;
 import org.ilri.eweigh.ui.SectionsPagerAdapter;
@@ -249,15 +252,20 @@ public class CattleViewActivity extends AppCompatActivity {
         }
 
         private void buildChart(){
-            ArrayList<Entry> values = new ArrayList<>();
+            final ArrayList<Entry> values = new ArrayList<>();
 
-            int count = 45;
-            float range = 180;
+            SubmissionsViewModel svm = ViewModelProviders.of(this).get(SubmissionsViewModel.class);
 
-            for (int i = 0; i < count; i++) {
-                float val = (float) (Math.random() * (range + 1)) + 20;
-                values.add(new Entry(i, val));
-            }
+            svm.getCattleSubmissions(cattle.getId()).observe(this, new Observer<List<Submission>>() {
+                @Override
+                public void onChanged(List<Submission> submissions) {
+
+                    for (int i = 0; i < submissions.size(); i++) {
+                        Submission s = submissions.get(i);
+                        values.add(new Entry(i, (float) s.getLw()));
+                    }
+                }
+            });
 
             LineDataSet set1;
 
