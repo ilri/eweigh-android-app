@@ -16,7 +16,7 @@ public class Submission {
      * */
     public static final String ID = "id";
     public static final String USER_ID = "userid";
-    public static final String CATTLE_ID = "userid";
+    public static final String CATTLE_ID = "cattleid";
     public static final String HG = "hg";
     public static final String LW = "lw";
     public static final String LAT = "lat";
@@ -34,6 +34,8 @@ public class Submission {
     private int userId, cattleId;
     private double hg, lw, lat, lng;
     private String createdOn;
+
+    public Submission(){}
 
     public Submission(JSONObject obj){
         try {

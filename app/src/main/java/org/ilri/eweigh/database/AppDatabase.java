@@ -19,12 +19,14 @@ import org.ilri.eweigh.database.dao.DosagesDao;
 import org.ilri.eweigh.database.dao.FeedsDao;
 import org.ilri.eweigh.database.dao.SubmissionsDao;
 import org.ilri.eweigh.feeds.Feed;
+import org.ilri.eweigh.hg_lw.models.Submission;
 
 @Database(entities = {
         Breed.class,
         Cattle.class,
         Dosage.class,
-        Feed.class
+        Feed.class,
+        Submission.class
 }, version = 7, exportSchema = false)
 
 public abstract class AppDatabase extends RoomDatabase {

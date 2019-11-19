@@ -184,8 +184,9 @@ public class CattleViewActivity extends AppCompatActivity {
             txtLiveWeight = view.findViewById(R.id.txt_live_weight);
 
             txtTag.setText(String.format("%s: %s", context.getString(R.string.tag), cattle.getTag()));
-            txtGender.setText(String.format("%s: %s", context.getString(R.string.gender), cattle.getGender()));
-            txtBreed.setText(String.format("%s: %s", context.getString(R.string.breed), cattle.getBreed()));
+            txtBreed.setText(String.format("%s: %s", context.getString(R.string.breed),
+                    cattle.getBreed().toUpperCase()));
+            txtGender.setText(String.format("%s: %s", context.getString(R.string.gender), cattle.getGender().toUpperCase()));
             txtDateAdded.setText(String.format("%s: %s", context.getString(R.string.added_on),
                     Utils.formatDate(cattle.getCreatedOn())));
 
@@ -235,6 +236,7 @@ public class CattleViewActivity extends AppCompatActivity {
 
             XAxis x = lineChart.getXAxis();
             x.setPosition(XAxis.XAxisPosition.BOTTOM);
+            x.setGranularity(1);
 
             YAxis y = lineChart.getAxisLeft();
             y.setLabelCount(6, false);
@@ -244,28 +246,27 @@ public class CattleViewActivity extends AppCompatActivity {
             lineChart.animateXY(300, 300);
             lineChart.invalidate();
 
-            buildChart();
+            SubmissionsViewModel svm = ViewModelProviders.of(this).get(SubmissionsViewModel.class);
+
+            svm.getCattleSubmissions(cattle.getId()).observe(this, new Observer<List<Submission>>() {
+                @Override
+                public void onChanged(List<Submission> submissions) {
+                    buildChart(submissions);
+                }
+            });
 
             Fonty.setFonts(container);
 
             return view;
         }
 
-        private void buildChart(){
+        private void buildChart(List<Submission> submissions){
             final ArrayList<Entry> values = new ArrayList<>();
 
-            SubmissionsViewModel svm = ViewModelProviders.of(this).get(SubmissionsViewModel.class);
-
-            svm.getCattleSubmissions(cattle.getId()).observe(this, new Observer<List<Submission>>() {
-                @Override
-                public void onChanged(List<Submission> submissions) {
-
-                    for (int i = 0; i < submissions.size(); i++) {
-                        Submission s = submissions.get(i);
-                        values.add(new Entry(i, (float) s.getLw()));
-                    }
-                }
-            });
+            for (int i = 0; i < submissions.size(); i++) {
+                Submission s = submissions.get(i);
+                values.add(new Entry(i, (float) s.getLw()));
+            }
 
             LineDataSet set1;
 
@@ -322,7 +323,7 @@ public class CattleViewActivity extends AppCompatActivity {
                     double liveWeight = data.getDoubleExtra(Cattle.LIVE_WEIGHT, 0);
 
                     if(liveWeight > 0){
-                        Toast.makeText(context, "LW: " + liveWeight, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, "Live Weight is " + liveWeight, Toast.LENGTH_SHORT).show();
 
                         txtLiveWeight.setText(String.valueOf(liveWeight));
 
