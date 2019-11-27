@@ -551,7 +551,7 @@ public class CattleViewActivity extends AppCompatActivity {
                                 String dose = "" +
                                         "Disease: " + obj.getString(Dosage.DISEASE) + "\n" +
                                         "Agent: " + obj.getString(Dosage.CHEMICAL_AGENT) + "\n" +
-                                        "Dosage: " + obj.getString(Dosage.DOSAGE) + "ml\n" +
+                                        "Dosage: " + obj.getString(Dosage.DOSAGE) + "\n" +
                                         "Application Mode: " + obj.getString(Dosage.APPLICATION_MODE);
 
                                 txtResponse.setText(dose);

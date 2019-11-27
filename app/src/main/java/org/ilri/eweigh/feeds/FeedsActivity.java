@@ -262,7 +262,7 @@ public class FeedsActivity extends AppCompatActivity {
                     }
                     else{
 
-                        String ration = "RATION AS FED: \n\n" +
+                        String ration = "FEED RATION: \n\n" +
                                 "Forage: " + res.optDouble("forage", 0) + " kg\n" +
                                 "Concentrate: " + res.optDouble("concentrate", 0) + " kg";
 
