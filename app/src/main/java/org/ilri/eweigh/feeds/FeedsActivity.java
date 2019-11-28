@@ -262,9 +262,11 @@ public class FeedsActivity extends AppCompatActivity {
                     }
                     else{
 
-                        String ration = "FEED RATION: \n\n" +
-                                "Forage: " + res.optDouble("forage", 0) + " kg\n" +
-                                "Concentrate: " + res.optDouble("concentrate", 0) + " kg";
+                        String ration = "FEEDS (KG): \n\n" +
+                                res.optString("forageName", "Forage") + ": " +
+                                    res.optDouble("forage", 0) + "\n" +
+                                res.optString("concentrateName", "Concentrate") + ": " +
+                                    res.optDouble("concentrate", 0);
 
                         txtRation.setText(ration);
                         txtRation.setTextColor(Color.BLUE);

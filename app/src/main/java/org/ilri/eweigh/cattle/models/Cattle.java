@@ -146,11 +146,11 @@ public class Cattle implements Serializable {
         return array.length() > 0;
     }
 
-    public boolean isBull(){
+    public boolean isMale(){
         return gender.equals(GENDER_MALE);
     }
 
-    public boolean isHeifer(){
+    public boolean isFemale(){
         return gender.equals(GENDER_FEMALE);
     }
 }

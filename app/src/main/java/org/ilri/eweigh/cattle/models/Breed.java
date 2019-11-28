@@ -98,4 +98,8 @@ public class Breed implements Serializable {
     public static boolean hasItems(JSONArray array){
         return array.length() > 0;
     }
+
+    public double getReferenceWeight(){
+        return matureWeight * 0.65;
+    }
 }

@@ -48,4 +48,7 @@
     <string name="male">Kiume</string>
     <string name="female">Kike</string>
     <string name="mating_intro">Mwongozo huu hukusaidia kujua iwapo ng\'ombe yuko tayari kwa kupandikiza kulingana na uzani:</string>
+
+    <string name="gender_male">Kiume</string>
+    <string name="gender_female">Kike</string>
 </resources>

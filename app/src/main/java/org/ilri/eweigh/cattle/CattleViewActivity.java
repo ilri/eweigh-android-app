@@ -4,7 +4,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
@@ -16,9 +15,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.DashPathEffect;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -416,7 +414,7 @@ public class CattleViewActivity extends AppCompatActivity {
                         txtRation.setTextColor(Color.BLUE);
                     }
                     else{
-                        Toast.makeText(context, "Could not fetch feed rations", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, "Could not get feed ration", Toast.LENGTH_SHORT).show();
                     }
                 }
                 else{
@@ -621,7 +619,7 @@ public class CattleViewActivity extends AppCompatActivity {
 
             txtResponse = view.findViewById(R.id.txt_response);
 
-            if(cattle.isHeifer()){
+            if(cattle.isFemale()){
                 Breed breed = bvm.getBreed(cattle.getBreedId());
 
                 /*
@@ -629,14 +627,17 @@ public class CattleViewActivity extends AppCompatActivity {
                  * A cow is to be mated at 65% of their mature weight
                  *
                  * */
-                double referenceWeight = breed.getMatureWeight() * 0.65;
+                double referenceWeight = breed.getReferenceWeight();
 
-                if(referenceWeight >= cattle.getLiveWeight()){
+                if(cattle.getLiveWeight() >= referenceWeight){
                     txtResponse.setText("Ready to mate");
                     txtResponse.setTextColor(Color.BLUE);
                 }
                 else{
-                    txtResponse.setText("Not ready to mate");
+                    String kiloGain = Utils.formatNumber(referenceWeight - cattle.getLiveWeight());
+
+                    txtResponse.setText(Html.fromHtml(
+                            String.format("Not ready to mate. Needs to gain <b>%sKG</b>", kiloGain)));
                     txtResponse.setTextColor(Color.RED);
                 }
             }

@@ -1,6 +1,7 @@
 package org.ilri.eweigh.cattle;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -58,6 +59,17 @@ public class CattleAdapter  extends BaseAdapter {
         ((TextView) view.findViewById(R.id.txt_breed)).setText(String.format("Breed: %s", c.getBreed()));
         ((TextView) view.findViewById(R.id.txt_date_created))
                 .setText(String.format("Added: %s", Utils.formatDate(c.getCreatedOn())));
+
+        TextView txtGender = view.findViewById(R.id.txt_gender);
+
+        if(c.isMale()){
+            txtGender.setText(context.getString(R.string.gender_male));
+            txtGender.setTextColor(Color.parseColor("#536DFE"));
+        }
+        else{
+            txtGender.setText(context.getString(R.string.gender_female));
+            txtGender.setTextColor(Color.parseColor("#E91E63"));
+        }
 
         return view;
     }

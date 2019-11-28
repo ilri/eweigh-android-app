@@ -15,14 +15,34 @@
         android:orientation="horizontal"
         style="@style/ListCardTheme">
 
-        <ImageView
+        <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="50dp"
-            android:layout_marginEnd="10dp"
-            android:adjustViewBounds="true"
-            android:padding="10dp"
-            android:scaleType="fitStart"
-            app:srcCompat="@drawable/cow"/>
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:layout_marginEnd="10dp"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:adjustViewBounds="true"
+                android:scaleType="fitStart"
+                app:srcCompat="@drawable/cow"/>
+
+            <TextView
+                android:id="@+id/txt_gender"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:paddingStart="3dp"
+                android:paddingEnd="3dp"
+                android:text="Female"
+                android:textColor="@color/colorAccent"
+                android:textStyle="bold"
+                android:textAlignment="center"/>
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="0dp"

@@ -27,8 +27,9 @@
     <string name="email_mobile_no">Email/Mobile No.</string>
     <string name="email_address">Email Address</string>
     <string name="password">Password</string>
-    <string name="don_t_have_an_account">Don\\\'t have an account?</string>
+    <string name="don_t_have_an_account">Don\'t have an account?</string>
     <string name="create_one">Create one</string>
+
     <string name="my_profile">My Profile</string>
     <string name="logout">Logout</string>
     <string name="view_submissions">View Submissions</string>
@@ -52,4 +53,7 @@
     <string name="male">Male</string>
     <string name="female">Female</string>
     <string name="mating_intro">This guide helps you to determine whether the cow is ready for mating based on their live weight:</string>
+
+    <string name="gender_male">Male</string>
+    <string name="gender_female">Female</string>
 </resources>
