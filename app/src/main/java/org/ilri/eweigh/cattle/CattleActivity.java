@@ -255,6 +255,7 @@ public class CattleActivity extends AppCompatActivity implements AdapterView.OnI
 
                                         if(obj.has(Cattle.CATTLE)){
                                             dialog.dismiss();
+                                            blankState.setVisibility(View.GONE);
 
                                             inputTag.setText("");
                                             spinnerBreeds.setSelection(0);
