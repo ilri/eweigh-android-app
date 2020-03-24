@@ -37,16 +37,16 @@ public class CattleViewModel extends AndroidViewModel {
         return cattleDao.getCattle(id);
     }
 
-    public void insert(Cattle breed){
-        cattleDao.insert(breed);
+    public void insert(Cattle cattle){
+        cattleDao.insert(cattle);
     }
 
-    public void update(Cattle breed){
-        cattleDao.update(breed);
+    public void update(Cattle cattle){
+        cattleDao.update(cattle);
     }
 
-    public void delete(Cattle breed){
-        cattleDao.delete(breed);
+    public void delete(Cattle cattle){
+        cattleDao.delete(cattle);
     }
 
     public void deleteAll(){
