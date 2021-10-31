@@ -246,7 +246,7 @@ public class CattleViewActivity extends AppCompatActivity {
 
             SubmissionsViewModel svm = ViewModelProviders.of(this).get(SubmissionsViewModel.class);
 
-            svm.getCattleSubmissions(cattle.getId()).observe(this, new Observer<List<Submission>>() {
+            svm.getCattleSubmissions(cattle.getId()).observe(getViewLifecycleOwner(), new Observer<List<Submission>>() {
                 @Override
                 public void onChanged(List<Submission> submissions) {
                     buildChart(submissions);

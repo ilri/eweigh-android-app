@@ -26,7 +26,7 @@ public class AppController extends Application {
             .normalTypeface("Lato-Regular.ttf")
             .boldTypeface("Lato-Bold.ttf")
             .italicTypeface("Lato-Italic.ttf")
-            .done();
+            .build();
 
         // Update locale
         Utils.setLocale(this, "sw");
