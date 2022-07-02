@@ -16,8 +16,8 @@ import java.util.Map;
 public class APIService {
     private static final String TAG = APIService.class.getSimpleName();
 
-    private Context context;
-    private ConnectivityInfo connDetector;
+    private final Context context;
+    private final ConnectivityInfo connDetector;
 
     public APIService(Context context){
         this.context = context;

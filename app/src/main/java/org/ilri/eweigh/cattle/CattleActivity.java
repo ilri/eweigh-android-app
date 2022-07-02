@@ -1,10 +1,5 @@
 package org.ilri.eweigh.cattle;
 
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
-
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -26,8 +21,10 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
+
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.marcinorlowski.fonty.Fonty;
 
@@ -81,7 +78,7 @@ public class CattleActivity extends AppCompatActivity implements AdapterView.OnI
         apiService = new APIService(this);
         user = new AccountUtils(this).getUserDetails();
 
-        cvm = ViewModelProviders.of(this).get(CattleViewModel.class);
+        cvm = new ViewModelProvider(this).get(CattleViewModel.class);
 
         progressBar = findViewById(R.id.progress_bar);
         blankState = findViewById(R.id.txt_blank_state);
@@ -89,19 +86,9 @@ public class CattleActivity extends AppCompatActivity implements AdapterView.OnI
         listView = findViewById(R.id.list_view_cattle);
 
         FloatingActionButton fab = findViewById(R.id.fab_cattle);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showRegisterCattleModal();
-            }
-        });
+        fab.setOnClickListener(v -> showRegisterCattleModal());
 
-        cvm.getAll().observe(this, new Observer<List<Cattle>>() {
-            @Override
-            public void onChanged(List<Cattle> cattle) {
-                renderList(cattle);
-            }
-        });
+        cvm.getAll().observe(this, this::renderList);
 
         getCattle();
 
@@ -118,59 +105,54 @@ public class CattleActivity extends AppCompatActivity implements AdapterView.OnI
     }
 
     private void getCattle(){
+        progressBar.setVisibility(View.VISIBLE);
+
         RequestParams params = new RequestParams();
         params.put(User.ID, String.valueOf(user.getUserId()));
 
         final int recordCount = cvm.getCount();
 
-        apiService.post(URL.Cattle, params, new Response.Listener<String>() {
-                @Override
-                public void onResponse(String response) {
-                    Log.d(TAG, "Response: " + response);
-                    progressBar.setVisibility(View.GONE);
+        apiService.post(URL.Cattle, params, response -> {
+            Log.d(TAG, "Response: " + response);
+            progressBar.setVisibility(View.GONE);
 
-                    try {
-                        JSONArray arr = new JSONArray(response);
+            try {
+                JSONArray arr = new JSONArray(response);
 
-                        cattleList = new ArrayList<>();
+                cattleList = new ArrayList<>();
 
-                        if(arr.length() > 0){
-                            blankState.setVisibility(View.GONE);
+                if(arr.length() > 0){
+                    blankState.setVisibility(View.GONE);
 
-                            cvm.deleteAll();
+                    cvm.deleteAll();
 
-                            for(int i=0; i<arr.length(); i++){
-                                Cattle c = new Cattle(arr.getJSONObject(i));
-                                cattleList.add(c);
+                    for(int i=0; i<arr.length(); i++){
+                        Cattle c = new Cattle(arr.getJSONObject(i));
+                        cattleList.add(c);
 
-                                // Store cattleList locally
-                                cvm.insert(c);
-                            }
-                        }
-                        else if(arr.length() == 0 && recordCount == 0){
-                            blankState.setVisibility(View.VISIBLE);
-                        }
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
+                        // Store cattleList locally
+                        cvm.insert(c);
                     }
                 }
-
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    Log.d(TAG, "Error: " + error.getMessage());
-                    progressBar.setVisibility(View.GONE);
-
-                    if(recordCount == 0){
-                        blankState.setVisibility(View.VISIBLE);
-                    }
+                else if(arr.length() == 0 && recordCount == 0){
+                    blankState.setVisibility(View.VISIBLE);
                 }
-            });
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }, error -> {
+            Log.d(TAG, "Error: " + error.getMessage());
+            progressBar.setVisibility(View.GONE);
+
+            if(recordCount == 0){
+                blankState.setVisibility(View.VISIBLE);
+            }
+        });
     }
 
     private void showRegisterCattleModal(){
-        BreedsViewModel bvm = ViewModelProviders.of(this).get(BreedsViewModel.class);
+        BreedsViewModel bvm = new ViewModelProvider(this).get(BreedsViewModel.class);
 
         View view = LayoutInflater
                 .from(this)
@@ -184,20 +166,15 @@ public class CattleActivity extends AppCompatActivity implements AdapterView.OnI
         inputTag.setFilters(new InputFilter[] {new InputFilter.AllCaps()});
 
         // Populate breeds
-        bvm.getAll().observe(this, new Observer<List<Breed>>() {
+        bvm.getAll().observe(this, breeds -> {
+            ArrayList<Breed> breedsList = new ArrayList<>();
 
-            @Override
-            public void onChanged(List<Breed> breeds) {
+            breedsList.add(new Breed(0, "Select Breed"));
+            breedsList.addAll(breeds);
 
-                ArrayList<Breed> breedsList = new ArrayList<>();
-
-                breedsList.add(new Breed(0, "Select Breed"));
-                breedsList.addAll(breeds);
-
-                ArrayAdapter<Breed> adapter = new ArrayAdapter<>(CattleActivity.this,
-                        android.R.layout.simple_spinner_dropdown_item, breedsList);
-                spinnerBreeds.setAdapter(adapter);
-            }
+            ArrayAdapter<Breed> adapter = new ArrayAdapter<>(CattleActivity.this,
+                    android.R.layout.simple_spinner_dropdown_item, breedsList);
+            spinnerBreeds.setAdapter(adapter);
         });
 
         final ProgressDialog progressDialog =
@@ -214,92 +191,77 @@ public class CattleActivity extends AppCompatActivity implements AdapterView.OnI
         Button btnAddCattle = view.findViewById(R.id.btn_add_cattle);
         Button btnCancel = view.findViewById(R.id.btn_cancel);
 
-        btnAddCattle.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String tag = inputTag.getText().toString();
+        btnAddCattle.setOnClickListener(v -> {
+            String tag = inputTag.getText().toString();
 
-                Breed b = (Breed) spinnerBreeds.getSelectedItem();
-                int breed = b.getId();
+            Breed b = (Breed) spinnerBreeds.getSelectedItem();
+            int breed = b.getId();
 
-                if(TextUtils.isEmpty(tag)){
-                    inputTag.setError(getString(R.string.required));
-                }
-                else if(breed == 0){
-                    ((TextView) spinnerBreeds.getSelectedView())
-                            .setError(getString(R.string.select_breed));
-                }
-                else if(TextUtils.isEmpty(gender)){
-                    radioGenderFemale.setError(getString(R.string.select_gender));
-                }
-                else{
-                    progressDialog.show();
+            if(TextUtils.isEmpty(tag)){
+                inputTag.setError(getString(R.string.required));
+            }
+            else if(breed == 0){
+                ((TextView) spinnerBreeds.getSelectedView())
+                        .setError(getString(R.string.select_breed));
+            }
+            else if(TextUtils.isEmpty(gender)){
+                radioGenderFemale.setError(getString(R.string.select_gender));
+            }
+            else{
+                progressDialog.show();
 
-                    RequestParams params = new RequestParams();
-                    params.put(User.ID, String.valueOf(user.getUserId()));
-                    params.put(Cattle.TAG, tag);
-                    params.put(Cattle.GENDER, gender);
-                    params.put(Cattle.BREED, String.valueOf(breed));
+                RequestParams params = new RequestParams();
+                params.put(User.ID, String.valueOf(user.getUserId()));
+                params.put(Cattle.TAG, tag);
+                params.put(Cattle.GENDER, gender);
+                params.put(Cattle.BREED, String.valueOf(breed));
 
-                    apiService.post(
-                            URL.RegisterCattle,
-                            params,
-                            new Response.Listener<String>() {
-                                @Override
-                                public void onResponse(String response) {
-                                    Log.d(TAG, "Response: " + response);
-                                    progressDialog.dismiss();
+                apiService.post(
+                        URL.RegisterCattle,
+                        params,
+                        response -> {
+                            Log.d(TAG, "Response: " + response);
+                            progressDialog.dismiss();
 
-                                    try {
-                                        JSONObject obj = new JSONObject(response);
+                            try {
+                                JSONObject obj = new JSONObject(response);
 
-                                        if(obj.has(Cattle.CATTLE)){
-                                            dialog.dismiss();
-                                            blankState.setVisibility(View.GONE);
+                                if(obj.has(Cattle.CATTLE)){
+                                    dialog.dismiss();
+                                    blankState.setVisibility(View.GONE);
 
-                                            inputTag.setText("");
-                                            spinnerBreeds.setSelection(0);
+                                    inputTag.setText("");
+                                    spinnerBreeds.setSelection(0);
 
-                                            Cattle c = new Cattle(obj.getJSONObject(Cattle.CATTLE));
-                                            cattleList.add(0, c);
+                                    Cattle c = new Cattle(obj.getJSONObject(Cattle.CATTLE));
+                                    cattleList.add(0, c);
 
-                                            cvm.insert(c);
+                                    cvm.insert(c);
 
-                                            adapter.notifyDataSetChanged();
-                                        }
-
-                                        if(obj.has("message")){
-                                            Toast.makeText(
-                                                    CattleActivity.this,
-                                                    obj.getString("message"),
-                                                    Toast.LENGTH_SHORT).show();
-                                        }
-
-                                    } catch (JSONException e) {
-                                        e.printStackTrace();
-                                    }
+                                    adapter.notifyDataSetChanged();
                                 }
 
-                            }, new Response.ErrorListener() {
-                                @Override
-                                public void onErrorResponse(VolleyError error) {
-                                    Log.d(TAG, "Error: " + error.getMessage());
-                                    progressDialog.dismiss();
-
-                                    Toast.makeText(CattleActivity.this,
-                                            "Could not add cattleList", Toast.LENGTH_LONG).show();
+                                if(obj.has("message")){
+                                    Toast.makeText(
+                                            CattleActivity.this,
+                                            obj.getString("message"),
+                                            Toast.LENGTH_SHORT).show();
                                 }
-                            });
-                }
+
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }, error -> {
+                            Log.d(TAG, "Error: " + error.getMessage());
+                            progressDialog.dismiss();
+
+                            Toast.makeText(CattleActivity.this,
+                                    "Could not add cattleList", Toast.LENGTH_LONG).show();
+                        });
             }
         });
 
-        btnCancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialog.dismiss();
-            }
-        });
+        btnCancel.setOnClickListener(view1 -> dialog.dismiss());
     }
 
     public void onGenderRadioChanged(View v) {

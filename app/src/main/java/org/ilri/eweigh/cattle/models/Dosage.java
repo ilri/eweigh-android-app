@@ -40,11 +40,6 @@ public class Dosage implements Serializable {
 
     public Dosage(){}
 
-    public Dosage(int id, String dosage){
-        this.id = id;
-        this.dosage = dosage;
-    }
-
     public Dosage(JSONObject obj){
 
         try {

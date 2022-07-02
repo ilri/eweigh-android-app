@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.viewpager.widget.ViewPager;
 
@@ -167,7 +168,7 @@ public class CattleViewActivity extends AppCompatActivity {
         public void onCreate(@Nullable Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
 
-            cvm = ViewModelProviders.of(this).get(CattleViewModel.class);
+            cvm = new ViewModelProvider(this).get(CattleViewModel.class);
         }
 
         @Override
@@ -190,24 +191,21 @@ public class CattleViewActivity extends AppCompatActivity {
 
             txtLiveWeight.setText(Utils.formatNumber(cattle.getLiveWeight()));
 
-            view.findViewById(R.id.btn_get_lw).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
+            view.findViewById(R.id.btn_get_lw).setOnClickListener(v -> {
 
-                    /*
-                     * Send a request to the LiveWeightActivity class to calculate the live weight:
-                     *
-                     * 1. Pass cattleList object
-                     *
-                     * This returns the final value to the onActivityResult function and we can
-                     * update the UI and database values
-                     *
-                     * */
-                    Intent intent = new Intent(context, LiveWeightActivity.class);
-                    intent.putExtra(Cattle.CATTLE, cattle);
+                /*
+                 * Send a request to the LiveWeightActivity class to calculate the live weight:
+                 *
+                 * 1. Pass cattleList object
+                 *
+                 * This returns the final value to the onActivityResult function and we can
+                 * update the UI and database values
+                 *
+                 * */
+                Intent intent = new Intent(context, LiveWeightActivity.class);
+                intent.putExtra(Cattle.CATTLE, cattle);
 
-                    startActivityForResult(intent, RC_LIVE_WEIGHT);
-                }
+                startActivityForResult(intent, RC_LIVE_WEIGHT);
             });
 
             // Set up chart
@@ -244,14 +242,10 @@ public class CattleViewActivity extends AppCompatActivity {
             lineChart.animateXY(300, 300);
             lineChart.invalidate();
 
-            SubmissionsViewModel svm = ViewModelProviders.of(this).get(SubmissionsViewModel.class);
+            SubmissionsViewModel svm = new ViewModelProvider(this).get(SubmissionsViewModel.class);
 
-            svm.getCattleSubmissions(cattle.getId()).observe(getViewLifecycleOwner(), new Observer<List<Submission>>() {
-                @Override
-                public void onChanged(List<Submission> submissions) {
-                    buildChart(submissions);
-                }
-            });
+            svm.getCattleSubmissions(cattle.getId()).observe(getViewLifecycleOwner(),
+                    submissions -> buildChart(submissions));
 
             Fonty.setFonts(container);
 
@@ -293,12 +287,8 @@ public class CattleViewActivity extends AppCompatActivity {
                 set1.setFillColor(chartColor);
                 set1.setFillAlpha(100);
                 set1.setDrawHorizontalHighlightIndicator(false);
-                set1.setFillFormatter(new IFillFormatter() {
-                    @Override
-                    public float getFillLinePosition(ILineDataSet dataSet, LineDataProvider dataProvider) {
-                        return lineChart.getAxisLeft().getAxisMinimum();
-                    }
-                });
+                set1.setFillFormatter((dataSet,
+                                       dataProvider) -> lineChart.getAxisLeft().getAxisMinimum());
 
                 // create a data object with the data sets
                 LineData data = new LineData(set1);
@@ -375,24 +365,21 @@ public class CattleViewActivity extends AppCompatActivity {
 
             txtRation = view.findViewById(R.id.txt_feed_ration);
 
-            view.findViewById(R.id.btn_get_feed_ration).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
+            view.findViewById(R.id.btn_get_feed_ration).setOnClickListener(v -> {
 
-                    /*
-                     * Send a request to the FeedsActivity class to get :
-                     *
-                     * 1. Pass cattleList object
-                     *
-                     * This returns the final value to the onActivityResult function and we can
-                     * update the UI and database values
-                     *
-                     * */
-                    Intent intent = new Intent(context, FeedsActivity.class);
-                    intent.putExtra(Cattle.CATTLE, cattle);
+                /*
+                 * Send a request to the FeedsActivity class to get :
+                 *
+                 * 1. Pass cattleList object
+                 *
+                 * This returns the final value to the onActivityResult function and we can
+                 * update the UI and database values
+                 *
+                 * */
+                Intent intent = new Intent(context, FeedsActivity.class);
+                intent.putExtra(Cattle.CATTLE, cattle);
 
-                    startActivityForResult(intent, RC_FEED_RATION);
-                }
+                startActivityForResult(intent, RC_FEED_RATION);
             });
 
             Fonty.setFonts(container);
@@ -450,7 +437,7 @@ public class CattleViewActivity extends AppCompatActivity {
         public void onCreate(@Nullable Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
 
-            dvm = ViewModelProviders.of(this).get(DosagesViewModel.class);
+            dvm = new ViewModelProvider(this).get(DosagesViewModel.class);
         }
 
         @Override
@@ -492,12 +479,7 @@ public class CattleViewActivity extends AppCompatActivity {
             spinnerAgents = view.findViewById(R.id.spinner_agents);
             spinnerAgents.setEnabled(false);
 
-            view.findViewById(R.id.btn_get_dosage).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    fetchDosage();
-                }
-            });
+            view.findViewById(R.id.btn_get_dosage).setOnClickListener(v -> fetchDosage());
 
             Fonty.setFonts(container);
 
@@ -536,51 +518,45 @@ public class CattleViewActivity extends AppCompatActivity {
                 params.put(Dosage.CHEMICAL_AGENT, String.valueOf(agent.getId()));
                 params.put(Cattle.LIVE_WEIGHT, String.valueOf(cattle.getLiveWeight()));
 
-                new APIService(context).post(URL.GetDosage, params, new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        Log.d(TAG, response);
-                        progressDialog.dismiss();
+                new APIService(context).post(URL.GetDosage, params, response -> {
+                    Log.d(TAG, response);
+                    progressDialog.dismiss();
 
-                        try {
-                            JSONObject obj = new JSONObject(response);
+                    try {
+                        JSONObject obj = new JSONObject(response);
 
-                            if(obj.has(Dosage.DOSAGE)){
-                                String dose = "" +
-                                        "Disease: " + obj.getString(Dosage.DISEASE) + "\n" +
-                                        "Agent: " + obj.getString(Dosage.CHEMICAL_AGENT) + "\n" +
-                                        "Dosage: " + obj.getString(Dosage.DOSAGE) + "\n" +
-                                        "Application Mode: " + obj.getString(Dosage.APPLICATION_MODE);
+                        if(obj.has(Dosage.DOSAGE)){
+                            String dose = "" +
+                                    "Disease: " + obj.getString(Dosage.DISEASE) + "\n" +
+                                    "Agent: " + obj.getString(Dosage.CHEMICAL_AGENT) + "\n" +
+                                    "Dosage: " + obj.getString(Dosage.DOSAGE) + "\n" +
+                                    "Application Mode: " + obj.getString(Dosage.APPLICATION_MODE);
 
-                                txtResponse.setText(dose);
-                                txtResponse.setTextColor(Color.BLUE);
-                                txtResponse.setVisibility(View.VISIBLE);
+                            txtResponse.setText(dose);
+                            txtResponse.setTextColor(Color.BLUE);
+                            txtResponse.setVisibility(View.VISIBLE);
 
-                                spinnerAgents.setSelection(0);
-                                spinnerDiseases.setSelection(0);
-                            }
-                            else{
-                                txtResponse.setVisibility(View.GONE);
-                            }
-
-                            if(obj.has("message")){
-                                Toast.makeText(context, obj.getString("message"),
-                                        Toast.LENGTH_SHORT).show();
-                            }
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
+                            spinnerAgents.setSelection(0);
+                            spinnerDiseases.setSelection(0);
                         }
-                    }
-                }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        progressDialog.dismiss();
-                        txtResponse.setVisibility(View.GONE);
+                        else{
+                            txtResponse.setVisibility(View.GONE);
+                        }
 
-                        Toast.makeText(context, "Error fetching dosage",
-                                Toast.LENGTH_SHORT).show();
+                        if(obj.has("message")){
+                            Toast.makeText(context, obj.getString("message"),
+                                    Toast.LENGTH_SHORT).show();
+                        }
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
+                }, error -> {
+                    progressDialog.dismiss();
+                    txtResponse.setVisibility(View.GONE);
+
+                    Toast.makeText(context, "Error fetching dosage",
+                            Toast.LENGTH_SHORT).show();
                 });
             }
         }
@@ -592,16 +568,13 @@ public class CattleViewActivity extends AppCompatActivity {
      *
      * */
     public static class MatingGuideFragment extends Fragment {
-        private Context context;
-
         TextView txtResponse;
 
         BreedsViewModel bvm;
 
-        private Cattle cattle;
+        Cattle cattle;
 
         MatingGuideFragment(Context context, Cattle cattle) {
-            this.context = context;
             this.cattle = cattle;
         }
 
@@ -609,7 +582,7 @@ public class CattleViewActivity extends AppCompatActivity {
         public void onCreate(@Nullable Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
 
-            bvm = ViewModelProviders.of(this).get(BreedsViewModel.class);
+            bvm = new ViewModelProvider(this).get(BreedsViewModel.class);
         }
 
         @Override
@@ -669,13 +642,9 @@ public class CattleViewActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.cattle_view, menu);
 
         menu.findItem(R.id.action_delete).setOnMenuItemClickListener(
-                new MenuItem.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem menuItem) {
-                        showDeleteCattleDialog();
-
-                        return true;
-                    }
+                menuItem -> {
+                    showDeleteCattleDialog();
+                    return true;
                 });
 
         return true;
@@ -685,54 +654,39 @@ public class CattleViewActivity extends AppCompatActivity {
         AlertDialog alertDialog = Utils.getSimpleDialog(CattleViewActivity.this,
                 String.format("Delete %s?",  cattle.getTag()));
 
-        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Delete", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
+        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Delete", (dialogInterface, i) -> {
 
-                RequestParams params = new RequestParams();
-                params.put(Cattle.ID, String.valueOf(cattle.getId()));
+            RequestParams params = new RequestParams();
+            params.put(Cattle.ID, String.valueOf(cattle.getId()));
 
-                new APIService(CattleViewActivity.this).post(URL.DeleteCattle,
-                        params, new Response.Listener<String>() {
-                            @Override
-                            public void onResponse(String response) {
-                                Log.d(TAG, response);
+            new APIService(CattleViewActivity.this).post(URL.DeleteCattle,
+                    params, response -> {
+                        Log.d(TAG, response);
 
-                                try {
-                                    JSONObject obj = new JSONObject(response);
+                        try {
+                            JSONObject obj = new JSONObject(response);
 
-                                    if(obj.has("success")){
-                                        Toast.makeText(CattleViewActivity.this,
-                                                " " + obj.getString("message"),
-                                                Toast.LENGTH_SHORT).show();
-
-                                        Intent returnIntent = new Intent();
-                                        returnIntent.putExtra("deleted", true);
-                                        setResult(Activity.RESULT_OK, returnIntent);
-                                        finish();
-                                    }
-
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-
-                        }, new Response.ErrorListener() {
-                            @Override
-                            public void onErrorResponse(VolleyError error) {
+                            if(obj.has("success")){
                                 Toast.makeText(CattleViewActivity.this,
-                                        "Could not process request", Toast.LENGTH_SHORT).show();
+                                        " " + obj.getString("message"),
+                                        Toast.LENGTH_SHORT).show();
+
+                                Intent returnIntent = new Intent();
+                                returnIntent.putExtra("deleted", true);
+                                setResult(Activity.RESULT_OK, returnIntent);
+                                finish();
                             }
-                        });
-            }
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }, error -> Toast.makeText(CattleViewActivity.this,
+                            "Could not process request", Toast.LENGTH_SHORT).show());
         });
 
         alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel",
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        // Fail gracefully
-                    }
+                (dialogInterface, i) -> {
+                    // Fail gracefully
                 });
         alertDialog.show();
     }

@@ -2,6 +2,7 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/lightGray">
@@ -18,7 +19,8 @@
             android:theme="@style/ProgressBarTheme"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:indeterminate="true"/>
+            android:indeterminate="true"
+            android:visibility="gone"/>
 
         <TextView
             android:id="@+id/txt_blank_state"
@@ -41,8 +43,10 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="16dp"
+        android:backgroundTint="@color/colorAccent"
         android:src="@drawable/ic_plus_white_24dp"
         app:layout_anchor="@id/layout_list_cattle"
-        app:layout_anchorGravity="bottom|right|end" />
+        app:layout_anchorGravity="bottom|right|end"
+        tools:targetApi="lollipop" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

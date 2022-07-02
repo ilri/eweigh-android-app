@@ -5,8 +5,7 @@ import org.ilri.eweigh.BuildConfig;
 public class URL {
 
     private static final String BASE_URL = BuildConfig.DEBUG ?
-            "http://192.168.1.102/eweigh-api/" :
-            "https://app.eweighapp.com/";
+            "http://192.168.0.100/eweigh/eweigh-api/" : "https://ew.invoicer.co.ke/";
 
     private static final String BASE_API_URL = BASE_URL + "api/v1/";
     private static final String RESOURCE_URL = BASE_URL + "content/uploads/";
@@ -23,7 +22,7 @@ public class URL {
     public static final String UpdateAccount = BASE_API_URL + "user/update";
     public static final String Verify = BASE_API_URL + "account/verify";
 
-    // HG/LW
+    // HG-LW
     public static final String GetLiveWeight = BASE_API_URL + "lw";
     public static final String Cattle = BASE_API_URL + "cattle";
     public static final String RegisterCattle = BASE_API_URL + "cattle/register";
