@@ -4,30 +4,27 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.LocationManager;
 import android.os.Build;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.ViewModelProviders;
-
 import android.os.Bundle;
 import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.lifecycle.ViewModelProvider;
+
 import com.marcinorlowski.fonty.Fonty;
 
 import org.ilri.eweigh.R;
@@ -87,16 +84,12 @@ public class LiveWeightActivity extends AppCompatActivity {
         txtMeta = findViewById(R.id.txt_metadata);
 
         Button btn = findViewById(R.id.btn_submit_hg);
-        btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                if(TextUtils.isEmpty(inputHG.getText().toString())){
-                    inputHG.setError("Enter heart girth");
-                }
-                else{
-                    getLiveWeight();
-                }
+        btn.setOnClickListener(v -> {
+            if(TextUtils.isEmpty(inputHG.getText().toString())){
+                inputHG.setError("Enter heart girth");
+            }
+            else {
+                getLiveWeight();
             }
         });
 
@@ -108,7 +101,7 @@ public class LiveWeightActivity extends AppCompatActivity {
     private void getLiveWeight(){
         APIService apiService = new APIService(this);
 
-        final SubmissionsViewModel svm = ViewModelProviders.of(this).get(SubmissionsViewModel.class);
+        final SubmissionsViewModel svm = new ViewModelProvider(this).get(SubmissionsViewModel.class);
 
         final ProgressDialog progressDialog = Utils.getProgressDialog(this, "Processing...", false);
         final AlertDialog alertDialog = Utils.getSimpleDialog(LiveWeightActivity.this, "");
@@ -134,63 +127,51 @@ public class LiveWeightActivity extends AppCompatActivity {
         params.put(Submission.LAT, String.valueOf(latitude));
         params.put(Submission.LNG, String.valueOf(longitude));
 
-        apiService.post(URL.GetLiveWeight, params, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                Log.d(TAG, response);
-                progressDialog.dismiss();
+        apiService.post(URL.GetLiveWeight, params, response -> {
+            Log.d(TAG, response);
+            progressDialog.dismiss();
 
-                try {
-                    JSONObject obj = new JSONObject(response);
+            try {
+                JSONObject obj = new JSONObject(response);
 
-                    boolean error = obj.optBoolean("error", false);
-                    String message = obj.optString("message", "_");
+                boolean error = obj.optBoolean("error", false);
+                String message = obj.optString("message", "_");
 
-                    if(error){
-                        alertDialog.setMessage(message);
-                        alertDialog.show();
-                    }
-                    else{
-                        double LW = obj.optDouble(Submission.LW, 0);
-                        txtLW.setText(String.valueOf(LW));
-
-                        String meta = "Coordinates: " +
-                                obj.optString(Submission.LAT, "0") + ", " +
-                                obj.optString(Submission.LNG, "0");
-                        // txtMeta.setText(meta);
-
-                        // Store value locally to retrieve later
-                        svm.insert(new Submission(obj));
-
-                        if(cattle != null){
-
-                            /*
-                            *
-                            * Return value to previous page
-                            *
-                            * */
-                            Intent intent = new Intent();
-                            intent.putExtra(Cattle.LIVE_WEIGHT, LW);
-                            setResult(Activity.RESULT_OK, intent);
-
-                            finish();
-                        }
-                    }
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
+                if(error){
+                    alertDialog.setMessage(message);
+                    alertDialog.show();
                 }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.e(TAG, "Post: " + error.getLocalizedMessage());
+                else{
+                    double LW = obj.optDouble(Submission.LW, 0);
+                    txtLW.setText(String.valueOf(LW));
 
-                progressDialog.dismiss();
+                    // Store value locally to retrieve later
+                    svm.insert(new Submission(obj));
 
-                alertDialog.setMessage("Could not complete request");
-                alertDialog.show();
+                    if(cattle != null){
+
+                        /*
+                        *
+                        * Return value to previous page
+                        *
+                        * */
+                        Intent intent = new Intent();
+                        intent.putExtra(Cattle.LIVE_WEIGHT, LW);
+                        setResult(Activity.RESULT_OK, intent);
+
+                        finish();
+                    }
+                }
+
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
+        }, error -> {
+            Log.e(TAG, "Post: " + error.getLocalizedMessage());
+            progressDialog.dismiss();
+
+            alertDialog.setMessage("Could not complete request");
+            alertDialog.show();
         });
     }
 
@@ -234,29 +215,20 @@ public class LiveWeightActivity extends AppCompatActivity {
 
         try {
             gpsEnabled = lm.isProviderEnabled(LocationManager.GPS_PROVIDER);
-        } catch(Exception ex) {}
-
-        try {
             networkEnabled = lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
-        } catch(Exception ex) {}
+        } catch(Exception e) {
+            Log.e(TAG, "CheckGPS: " + e.getLocalizedMessage());
+        }
 
         if(!gpsEnabled && !networkEnabled) {
 
             new AlertDialog.Builder(this)
                     .setMessage("GPS is not enabled")
-                    .setPositiveButton("Open Location Settings", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface paramDialogInterface, int paramInt) {
-                            startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
-                        }
-                    })
+                    .setPositiveButton("Open Location Settings",
+                            (paramDialogInterface, paramInt) -> startActivity(
+                                    new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)))
                     .setCancelable(false)
-                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            finish();
-                        }
-                    })
+                    .setNegativeButton("Cancel", (dialog, which) -> finish())
                     .show();
         }
         else{
@@ -279,15 +251,12 @@ public class LiveWeightActivity extends AppCompatActivity {
                     new AlertDialog.Builder(this)
                             .setTitle("Location permission")
                             .setMessage(R.string.location_permission)
-                            .setPositiveButton("Proceed", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
+                            .setPositiveButton("Proceed", (dialogInterface, i) -> {
 
-                                    // Prompt the user once explanation has been shown
-                                    ActivityCompat.requestPermissions(LiveWeightActivity.this,
-                                            new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                                            Constants.RC_PERMISSION_REQUEST_LOCATION);
-                                }
+                                // Prompt the user once explanation has been shown
+                                ActivityCompat.requestPermissions(LiveWeightActivity.this,
+                                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                                        Constants.RC_PERMISSION_REQUEST_LOCATION);
                             })
                             .create()
                             .show();
@@ -307,41 +276,34 @@ public class LiveWeightActivity extends AppCompatActivity {
 
     @Override
     public void onRequestPermissionsResult(int requestCode,
-                                           String permissions[], int[] grantResults) {
-        switch (requestCode) {
+                                           @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
-            case Constants.RC_PERMISSION_REQUEST_LOCATION: {
+        if (requestCode == Constants.RC_PERMISSION_REQUEST_LOCATION) {
+            if (grantResults.length > 0
+                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // permission was granted
+                if (ContextCompat.checkSelfPermission(this,
+                        Manifest.permission.ACCESS_FINE_LOCATION)
+                        == PackageManager.PERMISSION_GRANTED) {
 
-                    // permission was granted
-                    if (ContextCompat.checkSelfPermission(this,
-                            Manifest.permission.ACCESS_FINE_LOCATION)
-                            == PackageManager.PERMISSION_GRANTED){
-
-                        checkGPS();
-                    }
-
-                }
-                else{
-                    Toast.makeText(this, "You need to allow location permission",
-                            Toast.LENGTH_SHORT).show();
                     checkGPS();
                 }
-                break;
+
+            } else {
+                Toast.makeText(this, "You need to allow location permission",
+                        Toast.LENGTH_SHORT).show();
+                checkGPS();
             }
         }
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
-        switch(item.getItemId()){
-
-            case android.R.id.home:
-                onBackPressed();
-                return true;
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            return true;
         }
 
         return super.onOptionsItemSelected(item);
